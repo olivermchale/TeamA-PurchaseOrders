@@ -4,6 +4,7 @@ using System.IO;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 using System.Xml.Serialization;
 using TeamA.PurchaseOrders.Models.Dtos;
 using TeamA.PurchaseOrders.Services.Interfaces;
@@ -26,12 +27,9 @@ namespace TeamA.PurchaseOrders.Services.Services
                 {
                     if (response.IsSuccessStatusCode)
                     {
-                        var xmlString = await response.Content.ReadAsStringAsync();
-                        XmlSerializer serializer = new XmlSerializer(typeof(ProductDto));
-                        using (StringReader reader = new StringReader(xmlString))
-                        {
-                            return (List<ProductDto>)(serializer.Deserialize(reader));
-                        }
+                        var products = await response.Content.ReadAsAsync<List<ProductDto>>();
+                        return products;
+                        
                     }
                 }
             }

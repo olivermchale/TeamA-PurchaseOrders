@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Xml.Serialization;
 
 namespace TeamA.PurchaseOrders.Models.Dtos
 {
@@ -12,7 +13,7 @@ namespace TeamA.PurchaseOrders.Models.Dtos
         public string CategoryName { get; set; }
         public string Description { get; set; }
         public string Ean { get; set; }
-        public bool ExpectedRestock { get; set; }
+        public bool? ExpectedRestock { get; set; }
         public int Id { get; set; }
         public bool InStock { get; set; }
         public string Name { get; set; }

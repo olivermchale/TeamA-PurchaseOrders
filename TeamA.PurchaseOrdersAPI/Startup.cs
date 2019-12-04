@@ -41,7 +41,7 @@ namespace TeamA.PurchaseOrdersAPI
             {
                 c.BaseAddress = undercuttersAddress;
                 c.DefaultRequestHeaders.Accept.Clear();
-                c.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/xml"));
+                c.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
             });
             //todo: add polly
 
