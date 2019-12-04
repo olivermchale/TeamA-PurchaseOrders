@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using TeamA.PurchaseOrders.Services.Interfaces;
 
 namespace TeamA.PurchaseOrdersAPI.Controllers
 {
@@ -10,10 +11,16 @@ namespace TeamA.PurchaseOrdersAPI.Controllers
     [ApiController]
     public class ValuesController : ControllerBase
     {
+        private IUndercuttersService _undercuttersService;
+        public ValuesController(IUndercuttersService undercuttersService)
+        {
+            _undercuttersService = undercuttersService;
+        }
         // GET api/values
         [HttpGet]
-        public ActionResult<IEnumerable<string>> Get()
+        public async Task<ActionResult<IEnumerable<string>>> Get()
         {
+            var c = await _undercuttersService.GetProducts();
             return new string[] { "value1", "value2" };
         }
 
