@@ -12,31 +12,33 @@ namespace TeamA.PurchaseOrdersAPI.Controllers
     [ApiController]
     public class PurchaseOrdersController : ControllerBase
     {
-        private readonly IUndercuttersService _undercuttersService;
-        private readonly IDodgyDealersService _dodgyDealersService;
+        private IProductsService _productsService;
 
-        public PurchaseOrdersController(IUndercuttersService undercuttersService, IDodgyDealersService dodgyDealersService)
+        public PurchaseOrdersController(IProductsService productsService)
         {
-            _undercuttersService = undercuttersService;
-            _dodgyDealersService = dodgyDealersService;
+            _productsService = productsService;
         }
 
-        [HttpGet("getPrices")]
-        public async Task<IActionResult> GetPrices()
+        [HttpGet("getProducts")]
+        public async Task<IActionResult> GetProducts()
         {
-            var undercuttersPrices = await _undercuttersService.GetProducts();
-            var dodgyDealersPrices = await _dodgyDealersService.GetProducts();
-
-            return Ok(undercuttersPrices.Concat(dodgyDealersPrices));
+            var products = await _productsService.GetProducts();
+            if(products == null)
+            {
+                return NotFound();
+            }
+            return Ok(products);
         }
 
-        [HttpGet("GetUndercuttersPrices")]
-        public async Task<IActionResult> GetUndercuttersPrices()
+        [HttpGet("getProduct")]
+        public async Task<IActionResult> GetProduct(int id)
         {
-            var undercuttersPrices = await _undercuttersService.GetProducts();
-            return Ok(undercuttersPrices);
+            var products = await _productsService.GetProduct(id);
+            if(products == null)
+            {
+                return NotFound();
+            }
+            return Ok(products);
         }
-
-
     }
 }

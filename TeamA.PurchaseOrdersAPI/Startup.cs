@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -35,30 +36,38 @@ namespace TeamA.PurchaseOrdersAPI
             services.AddDbContext<PurchaseOrdersDb>(options => options.UseSqlServer(
                 Configuration.GetConnectionString("PurchaseOrders")));
 
+            services.AddScoped<IProductsService, ProductsService>();
             services.AddScoped<IUndercuttersService, UndercuttersService>();
             services.AddScoped<IDodgyDealersService, DodgyDealersService>();
 
             var undercuttersAddress = Configuration.GetValue<Uri>("UndercuttersUri");
+            var undercuttersTimeoutPolicy = Policy.TimeoutAsync<HttpResponseMessage>(10);
+
             services.AddHttpClient<IUndercuttersService, UndercuttersService>(c =>
             {
                 c.BaseAddress = undercuttersAddress;
                 c.DefaultRequestHeaders.Accept.Clear();
                 c.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
             }).AddTransientHttpErrorPolicy(p =>
-                p.OrResult(msg => msg.StatusCode == System.Net.HttpStatusCode.ServiceUnavailable || msg.StatusCode == System.Net.HttpStatusCode.InternalServerError)
+                p.OrResult(r => !r.IsSuccessStatusCode)
                     .WaitAndRetryAsync(3, retry => TimeSpan.FromSeconds(Math.Pow(2, retry))))
-                        .AddTransientHttpErrorPolicy(p => p.CircuitBreakerAsync(3, TimeSpan.FromSeconds(30)));
+                        .AddTransientHttpErrorPolicy(p => p.CircuitBreakerAsync(3, TimeSpan.FromSeconds(30)))
+                            .AddPolicyHandler(undercuttersTimeoutPolicy);
 
             var dodgyDealersAddress = Configuration.GetValue<Uri>("DodgyDealersUri");
+            var dodgyDealersTimeoutPolicy = Policy.TimeoutAsync<HttpResponseMessage>(20);
+
             services.AddHttpClient<IDodgyDealersService, DodgyDealersService>(c =>
             {
                 c.BaseAddress = dodgyDealersAddress;
                 c.DefaultRequestHeaders.Accept.Clear();
                 c.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
             }).AddTransientHttpErrorPolicy(p =>
-                p.OrResult(msg => msg.StatusCode == System.Net.HttpStatusCode.NotFound)
+                p.OrResult(r => !r.IsSuccessStatusCode)
                     .WaitAndRetryAsync(3, retry => TimeSpan.FromSeconds(Math.Pow(2, retry))))
-                        .AddTransientHttpErrorPolicy(p => p.CircuitBreakerAsync(3, TimeSpan.FromSeconds(30)));
+                        .AddTransientHttpErrorPolicy(p => p.CircuitBreakerAsync(3, TimeSpan.FromSeconds(30)))
+                            .AddPolicyHandler(dodgyDealersTimeoutPolicy);
+            //todo: investigate if this actually works https://github.com/App-vNext/Polly/wiki/Polly-and-HttpClientFactory
 
         }
 
