@@ -41,7 +41,6 @@ namespace TeamA.PurchaseOrdersAPI
             services.AddScoped<IDodgyDealersService, DodgyDealersService>();
 
             var undercuttersAddress = Configuration.GetValue<Uri>("UndercuttersUri");
-            var undercuttersTimeoutPolicy = Policy.TimeoutAsync<HttpResponseMessage>(10);
 
             services.AddHttpClient<IUndercuttersService, UndercuttersService>(c =>
             {
@@ -51,8 +50,7 @@ namespace TeamA.PurchaseOrdersAPI
             }).AddTransientHttpErrorPolicy(p =>
                 p.OrResult(r => !r.IsSuccessStatusCode)
                     .WaitAndRetryAsync(3, retry => TimeSpan.FromSeconds(Math.Pow(2, retry))))
-                        .AddTransientHttpErrorPolicy(p => p.CircuitBreakerAsync(3, TimeSpan.FromSeconds(30)))
-                            .AddPolicyHandler(undercuttersTimeoutPolicy);
+                        .AddTransientHttpErrorPolicy(p => p.CircuitBreakerAsync(3, TimeSpan.FromSeconds(30)));
 
             var dodgyDealersAddress = Configuration.GetValue<Uri>("DodgyDealersUri");
             var dodgyDealersTimeoutPolicy = Policy.TimeoutAsync<HttpResponseMessage>(20);
@@ -66,8 +64,7 @@ namespace TeamA.PurchaseOrdersAPI
                 p.OrResult(r => !r.IsSuccessStatusCode)
                     .WaitAndRetryAsync(3, retry => TimeSpan.FromSeconds(Math.Pow(2, retry))))
                         .AddTransientHttpErrorPolicy(p => p.CircuitBreakerAsync(3, TimeSpan.FromSeconds(30)))
-                            .AddPolicyHandler(dodgyDealersTimeoutPolicy);
-            //todo: investigate if this actually works https://github.com/App-vNext/Polly/wiki/Polly-and-HttpClientFactory
+                            .AddPolicyHandler(dodgyDealersTimeoutPolicy); // This timeout is for the entire call, ensuring it just errors instead of leaving user waiting for > 30s
 
         }
 
