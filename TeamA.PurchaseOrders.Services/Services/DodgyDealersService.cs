@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
 using TeamA.PurchaseOrders.Models.Dtos;
@@ -17,7 +16,7 @@ namespace TeamA.PurchaseOrders.Services.Services
         {
             _client = client;
         }
-        public async Task<ProductArrayDto> GetProducts()
+        public async Task<List<ProductDto>> GetProducts()
         {
             try
             {
@@ -25,12 +24,8 @@ namespace TeamA.PurchaseOrders.Services.Services
                 {
                     if (response.IsSuccessStatusCode)
                     {
-                        var xmlString = await response.Content.ReadAsStringAsync();
-                        XmlSerializer serializer = new XmlSerializer(typeof(ProductDto));
-                        using (StringReader reader = new StringReader(xmlString))
-                        {
-                           return (ProductArrayDto)(serializer.Deserialize(reader));
-                        }
+                        var products = await response.Content.ReadAsAsync<List<ProductDto>>();
+                        return products;
                     }
                 }
             }

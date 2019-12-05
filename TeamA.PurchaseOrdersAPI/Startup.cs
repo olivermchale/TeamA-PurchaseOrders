@@ -11,6 +11,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Polly;
 using TeamA.PurchaseOrders.Data;
 using TeamA.PurchaseOrders.Services;
 using TeamA.PurchaseOrders.Services.Interfaces;
@@ -35,6 +36,7 @@ namespace TeamA.PurchaseOrdersAPI
                 Configuration.GetConnectionString("PurchaseOrders")));
 
             services.AddScoped<IUndercuttersService, UndercuttersService>();
+            services.AddScoped<IDodgyDealersService, DodgyDealersService>();
 
             var undercuttersAddress = Configuration.GetValue<Uri>("UndercuttersUri");
             services.AddHttpClient<IUndercuttersService, UndercuttersService>(c =>
@@ -42,17 +44,22 @@ namespace TeamA.PurchaseOrdersAPI
                 c.BaseAddress = undercuttersAddress;
                 c.DefaultRequestHeaders.Accept.Clear();
                 c.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
-            });
-            //todo: add polly
+            }).AddTransientHttpErrorPolicy(p =>
+                p.OrResult(msg => msg.StatusCode == System.Net.HttpStatusCode.ServiceUnavailable || msg.StatusCode == System.Net.HttpStatusCode.InternalServerError)
+                    .WaitAndRetryAsync(3, retry => TimeSpan.FromSeconds(Math.Pow(2, retry))))
+                        .AddTransientHttpErrorPolicy(p => p.CircuitBreakerAsync(3, TimeSpan.FromSeconds(30)));
 
             var dodgyDealersAddress = Configuration.GetValue<Uri>("DodgyDealersUri");
             services.AddHttpClient<IDodgyDealersService, DodgyDealersService>(c =>
             {
                 c.BaseAddress = dodgyDealersAddress;
                 c.DefaultRequestHeaders.Accept.Clear();
-                c.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/xml"));
-            });
-            
+                c.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+            }).AddTransientHttpErrorPolicy(p =>
+                p.OrResult(msg => msg.StatusCode == System.Net.HttpStatusCode.NotFound)
+                    .WaitAndRetryAsync(3, retry => TimeSpan.FromSeconds(Math.Pow(2, retry))))
+                        .AddTransientHttpErrorPolicy(p => p.CircuitBreakerAsync(3, TimeSpan.FromSeconds(30)));
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

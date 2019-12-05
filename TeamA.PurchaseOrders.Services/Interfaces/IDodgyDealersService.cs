@@ -8,6 +8,6 @@ namespace TeamA.PurchaseOrders.Services.Interfaces
 {
     public interface IDodgyDealersService
     {
-        Task<ProductArrayDto> GetProducts();
+        Task<List<ProductDto>> GetProducts();
     }
 }
