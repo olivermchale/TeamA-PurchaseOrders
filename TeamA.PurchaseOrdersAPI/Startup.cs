@@ -39,6 +39,8 @@ namespace TeamA.PurchaseOrdersAPI
             services.AddScoped<IProductsService, ProductsService>();
             services.AddScoped<IUndercuttersService, UndercuttersService>();
             services.AddScoped<IDodgyDealersService, DodgyDealersService>();
+            services.AddScoped<IBazzasBazaarService, BazzasBazaarService>();
+            services.AddScoped<StoreClient>();
 
             var undercuttersAddress = Configuration.GetValue<Uri>("UndercuttersUri");
 

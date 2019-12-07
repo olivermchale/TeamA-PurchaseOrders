@@ -11,11 +11,13 @@ namespace TeamA.PurchaseOrders.Services.Services
     {
         private readonly IUndercuttersService _undercuttersService;
         private readonly IDodgyDealersService _dodgyDealersService;
+        private readonly IBazzasBazaarService _bazzasBazaarService;
 
-        public ProductsService(IUndercuttersService undercuttersService, IDodgyDealersService dodgyDealersService)
+        public ProductsService(IUndercuttersService undercuttersService, IDodgyDealersService dodgyDealersService, IBazzasBazaarService bazzasBazaarService)
         {
             _undercuttersService = undercuttersService;
             _dodgyDealersService = dodgyDealersService;
+            _bazzasBazaarService = bazzasBazaarService;
         }
 
         public async Task<List<ProductListVm>> GetProducts()
@@ -56,6 +58,12 @@ namespace TeamA.PurchaseOrders.Services.Services
             };
 
             return new List<ProductItemVm> { undercuttersProductVm, dodgyDealersProductVm };
+        }
+
+        public async Task<ProductItemVm> GetBaz(int id)
+        {
+            var item = await _bazzasBazaarService.GetProduct(id);
+            return item;
         }
     }
 }

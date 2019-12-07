@@ -40,5 +40,12 @@ namespace TeamA.PurchaseOrdersAPI.Controllers
             }
             return Ok(products);
         }
+
+        [HttpGet("baz")]
+        public async Task<IActionResult> GetBaz(int id)
+        {
+            var product = await _productsService.GetBaz(id);
+            return Ok(product);
+        }
     }
 }

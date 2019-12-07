@@ -6,12 +6,8 @@ using TeamA.PurchaseOrders.Models.ViewModels;
 
 namespace TeamA.PurchaseOrders.Services.Interfaces
 {
-    public interface IProductsService
+    public interface IBazzasBazaarService
     {
-        Task<List<ProductListVm>> GetProducts();
-
-        Task<List<ProductItemVm>> GetProduct(int id);
-
-        Task<ProductItemVm> GetBaz(int id);
+        Task<ProductItemVm> GetProduct(int id);
     }
 }
