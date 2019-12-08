@@ -15,27 +15,24 @@ namespace TeamA.PurchaseOrders.Services.Services
         {
             _storeClient = storeClient;
         }
-        public async Task<ProductItemVm> GetProduct(int id)
+        public async Task<ProductDto> GetProduct(int id)
         {
             await _storeClient.OpenAsync();
             var x = await _storeClient.GetProductByIdAsync(id);
             await _storeClient.CloseAsync();
-            return new ProductItemVm
+            return new ProductDto
             {
-                Product = new ProductDto
-                {
-                    CategoryId = x.CategoryId,
-                    CategoryName = x.CategoryName,
-                    Description = x.Description,
-                    Ean = x.Ean,
-                    ExpectedRestock = x.ExpectedRestock == null ? false : true,
-                    Id = x.Id,
-                    InStock = x.InStock,
-                    Name = x.Name,
-                    Price = x.PriceForOne
-                },
-                Source = "BazaasBazaar"
+                CategoryId = x.CategoryId,
+                CategoryName = x.CategoryName,
+                Description = x.Description,
+                Ean = x.Ean,
+                ExpectedRestock = x.ExpectedRestock == null ? false : true,
+                Id = x.Id,
+                InStock = x.InStock,
+                Name = x.Name,
+                Price = x.PriceForOne
             };
         }
+        
     }
 }

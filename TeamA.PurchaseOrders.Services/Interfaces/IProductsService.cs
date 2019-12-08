@@ -11,7 +11,5 @@ namespace TeamA.PurchaseOrders.Services.Interfaces
         Task<List<ProductListVm>> GetProducts();
 
         Task<List<ProductItemVm>> GetProduct(int id);
-
-        Task<ProductItemVm> GetBaz(int id);
     }
 }

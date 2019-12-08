@@ -13,7 +13,7 @@ namespace TeamA.PurchaseOrders.Models.Dtos
         public string CategoryName { get; set; }
         public string Description { get; set; }
         public string Ean { get; set; }
-        public bool? ExpectedRestock { get; set; } = false;
+        public bool? ExpectedRestock { get; set; }
         public int Id { get; set; }
         public bool InStock { get; set; } = false;
         public string Name { get; set; }

@@ -44,6 +44,7 @@ namespace TeamA.PurchaseOrders.Services.Services
         {
             var undercuttersProduct = await _undercuttersService.GetProduct(id);
             var dodgyDealersProduct = await _dodgyDealersService.GetProduct(id);
+            var bazzasBazaarProduct = await _bazzasBazaarService.GetProduct(id);
 
             var undercuttersProductVm = new ProductItemVm
             {
@@ -57,13 +58,14 @@ namespace TeamA.PurchaseOrders.Services.Services
                 Source = "Dodgy Dealers"
             };
 
-            return new List<ProductItemVm> { undercuttersProductVm, dodgyDealersProductVm };
-        }
+            var bazaasBazaarProductVm = new ProductItemVm
+            {
+                Product = bazzasBazaarProduct,
+                Source = "Bazaas Bazaar"
+            };
 
-        public async Task<ProductItemVm> GetBaz(int id)
-        {
-            var item = await _bazzasBazaarService.GetProduct(id);
-            return item;
+
+            return new List<ProductItemVm> { undercuttersProductVm, dodgyDealersProductVm, bazaasBazaarProductVm };
         }
     }
 }
