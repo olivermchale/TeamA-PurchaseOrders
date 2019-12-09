@@ -12,11 +12,11 @@ namespace TeamA.PurchaseOrdersAPI.Controllers
     [Route("api/[controller]")]
     [ApiController]
     [EnableCors("AllowAll")]
-    public class PurchaseOrdersController : ControllerBase
+    public class ProductsController : ControllerBase
     {
         private IProductsService _productsService;
 
-        public PurchaseOrdersController(IProductsService productsService)
+        public ProductsController(IProductsService productsService)
         {
             _productsService = productsService;
         }
