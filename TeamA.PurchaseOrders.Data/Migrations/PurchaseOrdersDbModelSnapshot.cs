@@ -19,21 +19,20 @@ namespace TeamA.PurchaseOrders.Data.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("TeamA.PurchaseOrders.Data.Models.PaymentInformation", b =>
+            modelBuilder.Entity("TeamA.PurchaseOrders.Models.Dtos.PaymentInformationDto", b =>
                 {
                     b.Property<Guid>("ID")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<string>("CVC")
+                    b.Property<string>("CardCVC")
+                        .IsRequired();
+
+                    b.Property<DateTime>("CardExpiry");
+
+                    b.Property<string>("CardName")
                         .IsRequired();
 
                     b.Property<string>("CardNumber")
-                        .IsRequired();
-
-                    b.Property<string>("CardholderName")
-                        .IsRequired();
-
-                    b.Property<string>("ExpiryDate")
                         .IsRequired();
 
                     b.HasKey("ID");
@@ -41,21 +40,25 @@ namespace TeamA.PurchaseOrders.Data.Migrations
                     b.ToTable("PaymentInformation");
                 });
 
-            modelBuilder.Entity("TeamA.PurchaseOrders.Data.Models.PurchaseOrder", b =>
+            modelBuilder.Entity("TeamA.PurchaseOrders.Models.Dtos.PurchaseOrderDto", b =>
                 {
                     b.Property<Guid>("ID")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<double>("Cost");
+                    b.Property<string>("Address");
 
                     b.Property<bool>("IsDeleted");
 
                     b.Property<Guid>("PaymentInformationID");
 
-                    b.Property<Guid>("ProductID");
+                    b.Property<string>("Postcode");
+
+                    b.Property<int>("ProductID");
 
                     b.Property<string>("ProductName")
                         .IsRequired();
+
+                    b.Property<double>("ProductPrice");
 
                     b.Property<Guid>("PurchasedBy");
 
@@ -75,7 +78,7 @@ namespace TeamA.PurchaseOrders.Data.Migrations
                     b.ToTable("PurchaseOrders");
                 });
 
-            modelBuilder.Entity("TeamA.PurchaseOrders.Data.Models.PurchaseStatus", b =>
+            modelBuilder.Entity("TeamA.PurchaseOrders.Models.Dtos.PurchaseStatusDto", b =>
                 {
                     b.Property<Guid>("ID")
                         .ValueGeneratedOnAdd();
@@ -88,14 +91,14 @@ namespace TeamA.PurchaseOrders.Data.Migrations
                     b.ToTable("PurchaseStatus");
                 });
 
-            modelBuilder.Entity("TeamA.PurchaseOrders.Data.Models.PurchaseOrder", b =>
+            modelBuilder.Entity("TeamA.PurchaseOrders.Models.Dtos.PurchaseOrderDto", b =>
                 {
-                    b.HasOne("TeamA.PurchaseOrders.Data.Models.PaymentInformation", "PaymentInformation")
+                    b.HasOne("TeamA.PurchaseOrders.Models.Dtos.PaymentInformationDto", "PaymentInformation")
                         .WithMany()
                         .HasForeignKey("PaymentInformationID")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("TeamA.PurchaseOrders.Data.Models.PurchaseStatus", "PurchaseStatus")
+                    b.HasOne("TeamA.PurchaseOrders.Models.Dtos.PurchaseStatusDto", "PurchaseStatus")
                         .WithMany()
                         .HasForeignKey("StatusID")
                         .OnDelete(DeleteBehavior.Cascade);

@@ -25,7 +25,7 @@ namespace TeamA.PurchaseOrders.Data
 
             modelBuilder.Entity<PurchaseStatusDto>(x =>
             {
-                x.Property(p => p.ID).IsRequired();
+                x.Property(p => p.Id).IsRequired();
                 x.Property(p => p.Name).IsRequired();
             });
 

@@ -15,6 +15,7 @@
   <ItemGroup>
     <ProjectReference Include="..\TeamA.PurchaseOrders.Data\TeamA.PurchaseOrders.Data.csproj" />
     <ProjectReference Include="..\TeamA.PurchaseOrders.Models\TeamA.PurchaseOrders.Models.csproj" />
+    <ProjectReference Include="..\TeamA.PurchaseOrders.Repository\TeamA.PurchaseOrders.Repository.csproj" />
     <ProjectReference Include="..\TeamA.PurchaseOrders.Services\TeamA.PurchaseOrders.Services.csproj" />
   </ItemGroup>
 

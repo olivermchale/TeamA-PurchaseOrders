@@ -14,7 +14,8 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Polly;
 using TeamA.PurchaseOrders.Data;
-using TeamA.PurchaseOrders.Services;
+using TeamA.PurchaseOrders.Repository.Interfaces;
+using TeamA.PurchaseOrders.Repository.Repositories;
 using TeamA.PurchaseOrders.Services.Interfaces;
 using TeamA.PurchaseOrders.Services.Services;
 
@@ -53,6 +54,8 @@ namespace TeamA.PurchaseOrdersAPI
             services.AddScoped<IUndercuttersService, UndercuttersService>();
             services.AddScoped<IDodgyDealersService, DodgyDealersService>();
             services.AddScoped<IBazzasBazaarService, BazzasBazaarService>();
+            services.AddScoped<IOrdersRepository, OrdersRepository>();
+
             services.AddScoped<StoreClient>();
 
             var undercuttersAddress = Configuration.GetValue<Uri>("UndercuttersUri");

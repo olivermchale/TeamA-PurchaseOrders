@@ -6,7 +6,7 @@ namespace TeamA.PurchaseOrders.Models.Dtos
 {
     public class PurchaseStatusDto
     {
-        public Guid ID { get; set; } = new Guid();
+        public Guid Id { get; set; } = Guid.NewGuid();
 
         public string Name { get; set; } = "Ordered";
     }

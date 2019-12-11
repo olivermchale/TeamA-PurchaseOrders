@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace TeamA.PurchaseOrders.Data.Migrations
 {
-    public partial class init : Migration
+    public partial class update : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -13,9 +13,9 @@ namespace TeamA.PurchaseOrders.Data.Migrations
                 {
                     ID = table.Column<Guid>(nullable: false),
                     CardNumber = table.Column<string>(nullable: false),
-                    ExpiryDate = table.Column<string>(nullable: false),
-                    CVC = table.Column<string>(nullable: false),
-                    CardholderName = table.Column<string>(nullable: false)
+                    CardExpiry = table.Column<DateTime>(nullable: false),
+                    CardCVC = table.Column<string>(nullable: false),
+                    CardName = table.Column<string>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -40,13 +40,15 @@ namespace TeamA.PurchaseOrders.Data.Migrations
                 {
                     ID = table.Column<Guid>(nullable: false),
                     PurchasedBy = table.Column<Guid>(nullable: false),
-                    ProductID = table.Column<Guid>(nullable: false),
+                    ProductID = table.Column<int>(nullable: false),
                     PurchasedOn = table.Column<DateTime>(nullable: false),
                     StatusID = table.Column<Guid>(nullable: false),
                     PaymentInformationID = table.Column<Guid>(nullable: false),
                     ProductName = table.Column<string>(nullable: false),
                     Quantity = table.Column<int>(nullable: false),
-                    Cost = table.Column<double>(nullable: false),
+                    Address = table.Column<string>(nullable: true),
+                    Postcode = table.Column<string>(nullable: true),
+                    ProductPrice = table.Column<double>(nullable: false),
                     IsDeleted = table.Column<bool>(nullable: false)
                 },
                 constraints: table =>

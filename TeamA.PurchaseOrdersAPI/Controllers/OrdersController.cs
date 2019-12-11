@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using TeamA.PurchaseOrders.Models.Dtos;
+using TeamA.PurchaseOrders.Repository.Interfaces;
 
 namespace TeamA.PurchaseOrdersAPI.Controllers
 {
@@ -14,12 +15,24 @@ namespace TeamA.PurchaseOrdersAPI.Controllers
     [EnableCors("AllowAll")]
     public class OrdersController : ControllerBase
     {
+        private IOrdersRepository _ordersRepository;
 
+        public OrdersController(IOrdersRepository ordersRepository)
+        {
+            _ordersRepository = ordersRepository;       
+        }
         [HttpPost("createOrder")]
         public async Task<IActionResult> CreateOrder(PurchaseOrderDto orderInfo)
         {
-            //todo: ask craig about decorators 
-            return Ok(orderInfo);
+            var success = await _ordersRepository.CreateOrder(orderInfo);
+            return Ok(success);
+        }
+
+        [HttpGet("getOrders")]
+        public async Task<IActionResult> GetOrders()
+        {
+            var orders = await _ordersRepository.GetOrders();
+            return Ok(orders);
         }
     }
 }
