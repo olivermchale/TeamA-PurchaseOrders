@@ -8,13 +8,24 @@ using TeamA.PurchaseOrders.Services.Interfaces;
 
 namespace TeamA.PurchaseOrders.Services.Services
 {
-    public class BazzasBazaarService : IBazzasBazaarService
+    public class BazzasBazaarService : IBazzasBazaarService, IOrdersService
     {
         private StoreClient _storeClient;
+
+        public BazzasBazaarService()
+        {
+        }
+
         public BazzasBazaarService(StoreClient storeClient)
         {
             _storeClient = storeClient;
         }
+
+        public Task<OrderCreatedDto> CreateOrder(string accountName, string cardNumber, int productId, int quantity)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<ProductDto> GetProduct(int id)
         {
             await _storeClient.OpenAsync();

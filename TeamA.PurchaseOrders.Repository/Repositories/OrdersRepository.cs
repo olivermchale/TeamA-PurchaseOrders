@@ -18,18 +18,19 @@ namespace TeamA.PurchaseOrders.Repository.Repositories
             _context = context;
         }
 
-        public async Task<bool> CreateOrder(PurchaseOrderDto purchaseOrder)
+        public async Task<Guid?> CreateOrder(PurchaseOrderDto purchaseOrder)
         {
             try
             {
-                await _context.PurchaseOrders.AddAsync(purchaseOrder);
+                var dbEntity = await _context.PurchaseOrders.AddAsync(purchaseOrder);
                 await _context.SaveChangesAsync();
+                return dbEntity.Entity.ID;
             }
             catch(Exception e)
             {
                 // todo : exception handling
             }
-            return true;          
+            return null;          
         }
 
         public async Task<OrderListVm> GetOrders()
@@ -47,6 +48,27 @@ namespace TeamA.PurchaseOrders.Repository.Repositories
             {
                 Orders = orders
             };
+        }
+
+        public async Task<bool> UpdateOrderAsync(Guid? orderId, OrderCreatedDto createdOrder)
+        {
+            try
+            {
+                var order = await _context.PurchaseOrders.Where(a => a.ID == orderId).FirstOrDefaultAsync();
+                if(order == null)
+                {
+                    return false;
+                }
+                order.ExternalID = createdOrder.Id;
+                order.PurchaseStatus.Name = "Purchased";
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception e)
+            {
+                //todo: exception handling
+            }
+            return false;
         }
     }
 }

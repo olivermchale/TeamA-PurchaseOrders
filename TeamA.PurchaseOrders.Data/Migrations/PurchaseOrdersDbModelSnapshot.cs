@@ -45,13 +45,17 @@ namespace TeamA.PurchaseOrders.Data.Migrations
                     b.Property<Guid>("ID")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<string>("Address");
+                    b.Property<string>("Address")
+                        .IsRequired();
+
+                    b.Property<int>("ExternalID");
 
                     b.Property<bool>("IsDeleted");
 
                     b.Property<Guid>("PaymentInformationID");
 
-                    b.Property<string>("Postcode");
+                    b.Property<string>("Postcode")
+                        .IsRequired();
 
                     b.Property<int>("ProductID");
 
@@ -67,6 +71,8 @@ namespace TeamA.PurchaseOrders.Data.Migrations
 
                     b.Property<int>("Quantity");
 
+                    b.Property<string>("Source");
+
                     b.Property<Guid>("StatusID");
 
                     b.HasKey("ID");
@@ -80,13 +86,13 @@ namespace TeamA.PurchaseOrders.Data.Migrations
 
             modelBuilder.Entity("TeamA.PurchaseOrders.Models.Dtos.PurchaseStatusDto", b =>
                 {
-                    b.Property<Guid>("ID")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd();
 
                     b.Property<string>("Name")
                         .IsRequired();
 
-                    b.HasKey("ID");
+                    b.HasKey("Id");
 
                     b.ToTable("PurchaseStatus");
                 });

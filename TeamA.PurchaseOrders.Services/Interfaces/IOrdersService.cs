@@ -3,12 +3,11 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using TeamA.PurchaseOrders.Models.Dtos;
-using TeamA.PurchaseOrders.Models.ViewModels;
 
 namespace TeamA.PurchaseOrders.Services.Interfaces
 {
-    public interface IBazzasBazaarService : IOrdersService
+    public interface IOrdersService
     {
-        Task<ProductDto> GetProduct(int id);
+        Task<OrderCreatedDto> CreateOrder(string accountName, string cardNumber, int productId, int quantity);
     }
 }

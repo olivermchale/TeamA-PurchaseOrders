@@ -19,18 +19,22 @@ namespace TeamA.PurchaseOrders.Models.Dtos
 
         public Guid PaymentInformationID { get; set; }
 
+        public int ExternalID { get; set; }
+
         [Required, MinLength(2)]
         public string ProductName { get; set; }
 
         [Required]
         public int Quantity { get; set; }
+        [Required, DataType(DataType.Currency)]
+        public double ProductPrice { get; set; }
 
         [Required, DataType(DataType.Text)]
         public string Address { get; set; }
         [Required, DataType(DataType.PostalCode)]
         public string Postcode { get; set; }
-        [Required, DataType(DataType.Currency)]
-        public double ProductPrice { get; set; }
+
+        public string Source { get; set; }
 
         public bool IsDeleted { get; set; } = false;
 

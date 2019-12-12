@@ -7,7 +7,7 @@ using TeamA.PurchaseOrders.Models.ViewModels;
 
 namespace TeamA.PurchaseOrders.Services.Interfaces
 {
-    public interface IUndercuttersService
+    public interface IUndercuttersService : IOrdersService
     {
         Task<List<ProductDto>> GetProducts();
 

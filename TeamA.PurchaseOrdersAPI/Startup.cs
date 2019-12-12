@@ -16,6 +16,7 @@ using Polly;
 using TeamA.PurchaseOrders.Data;
 using TeamA.PurchaseOrders.Repository.Interfaces;
 using TeamA.PurchaseOrders.Repository.Repositories;
+using TeamA.PurchaseOrders.Services.Factories;
 using TeamA.PurchaseOrders.Services.Interfaces;
 using TeamA.PurchaseOrders.Services.Services;
 
@@ -57,6 +58,7 @@ namespace TeamA.PurchaseOrdersAPI
             services.AddScoped<IOrdersRepository, OrdersRepository>();
 
             services.AddScoped<StoreClient>();
+            services.AddScoped<OrdersFactory>();
 
             var undercuttersAddress = Configuration.GetValue<Uri>("UndercuttersUri");
 

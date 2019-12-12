@@ -33,7 +33,7 @@ namespace TeamA.PurchaseOrders.Services.Services
 
             var dodgyDealersList = new ProductListVm
             {
-                Source = "Dodgy Dealers",
+                Source = "DodgyDealers",
                 Products = dodgyDealersProducts
             };
 
@@ -49,19 +49,19 @@ namespace TeamA.PurchaseOrders.Services.Services
             var undercuttersProductVm = new ProductItemVm
             {
                 Product = undercuttersProduct,
-                Source = "Undercutters"
+                Source = "DodgyDealers"
             };
 
             var dodgyDealersProductVm = new ProductItemVm
             {
                 Product = dodgyDealersProduct,
-                Source = "Dodgy Dealers"
+                Source = "DodgyDealers"
             };
 
             var bazaasBazaarProductVm = new ProductItemVm
             {
                 Product = bazzasBazaarProduct,
-                Source = "Bazaas Bazaar"
+                Source = "DodgyDealers"
             };
 
 
