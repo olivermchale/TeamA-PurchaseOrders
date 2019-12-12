@@ -35,9 +35,10 @@ namespace TeamA.PurchaseOrdersAPI.Controllers
                 var order = await service.CreateOrder(orderInfo.PaymentInformation.CardName, orderInfo.PaymentInformation.CardNumber, orderInfo.ProductID, orderInfo.Quantity);
                 if(order != null)
                 {
-                    var success = await _ordersRepository.UpdateOrderAsync(orderId, order);
+                    var success = await _ordersRepository.UpdateOrderAsync(orderId, order, "Complete");
                     return Ok(success);
-                };            
+                };
+                await _ordersRepository.UpdateOrderAsync(orderId, null, "Failed");
             }
             return new StatusCodeResult(StatusCodes.Status500InternalServerError);
 

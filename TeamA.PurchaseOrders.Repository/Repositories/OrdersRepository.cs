@@ -50,7 +50,7 @@ namespace TeamA.PurchaseOrders.Repository.Repositories
             };
         }
 
-        public async Task<bool> UpdateOrderAsync(Guid? orderId, OrderCreatedDto createdOrder)
+        public async Task<bool> UpdateOrderAsync(Guid? orderId, OrderCreatedDto createdOrder, string status)
         {
             try
             {
@@ -59,8 +59,11 @@ namespace TeamA.PurchaseOrders.Repository.Repositories
                 {
                     return false;
                 }
-                order.ExternalID = createdOrder.Id;
-                order.PurchaseStatus.Name = "Purchased";
+                if(createdOrder != null)
+                {
+                    order.ExternalID = createdOrder.Id;
+                }
+                order.PurchaseStatus.Name = status;
                 await _context.SaveChangesAsync();
                 return true;
             }
