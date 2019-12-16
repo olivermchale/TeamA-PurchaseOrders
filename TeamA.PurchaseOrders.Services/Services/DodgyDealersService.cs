@@ -16,29 +16,34 @@ namespace TeamA.PurchaseOrders.Services.Services
     public class DodgyDealersService : IDodgyDealersService, IOrdersService
     {
         private HttpClient _client;
+        private readonly IHttpClientFactory _clientFactory;
 
         public DodgyDealersService()
         {
 
         }
-        public DodgyDealersService(HttpClient client)
+        public DodgyDealersService(HttpClient client, IHttpClientFactory clientFactory)
         {
             _client = client;
+            _clientFactory = clientFactory;
         }
         public async Task<List<ExternalProductDto>> GetProducts()
         {
             try
             {
-                using (HttpResponseMessage response = await _client.GetAsync("api/product"))
+                using (var client = _clientFactory.CreateClient("background"))
                 {
-                    if (response.IsSuccessStatusCode)
+                    using (HttpResponseMessage response = await _client.GetAsync("api/product"))
                     {
-                        var products = await response.Content.ReadAsAsync<List<ExternalProductDto>>();
-                        foreach(var product in products)
+                        if (response.IsSuccessStatusCode)
                         {
-                            product.Source = "DodgyDealers";
+                            var products = await response.Content.ReadAsAsync<List<ExternalProductDto>>();
+                            foreach (var product in products)
+                            {
+                                product.Source = "DodgyDealers";
+                            }
+                            return products;
                         }
-                        return products;
                     }
                 }
             }
@@ -53,12 +58,15 @@ namespace TeamA.PurchaseOrders.Services.Services
         {
             try
             {
-                using (HttpResponseMessage response = await _client.GetAsync($"api/product?id={id}"))
+                using (var client = _clientFactory.CreateClient("background"))
                 {
-                    if (response.IsSuccessStatusCode)
+                    using (HttpResponseMessage response = await client.GetAsync($"api/product?id={id}"))
                     {
-                        var product = await response.Content.ReadAsAsync<ExternalProductDto>();
-                        return product;
+                        if (response.IsSuccessStatusCode)
+                        {
+                            var product = await response.Content.ReadAsAsync<ExternalProductDto>();
+                            return product;
+                        }
                     }
                 }
             }

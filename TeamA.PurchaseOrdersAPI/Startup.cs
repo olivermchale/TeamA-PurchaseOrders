@@ -91,6 +91,16 @@ namespace TeamA.PurchaseOrdersAPI
                         .AddTransientHttpErrorPolicy(p => p.CircuitBreakerAsync(3, TimeSpan.FromSeconds(30)))
                             .AddPolicyHandler(dodgyDealersTimeoutPolicy); // This timeout is for the entire call, ensuring it just errors instead of leaving user waiting for > 30s
 
+            // Add a http client for the background services - this can be much more lenient than others as its doing its work as an inexpensive background task. 
+            services.AddHttpClient();
+            services.AddHttpClient("background", c => 
+            {
+                c.DefaultRequestHeaders.Accept.Clear();
+                c.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+            }).AddTransientHttpErrorPolicy(p =>
+                p.OrResult(r => !r.IsSuccessStatusCode)
+                    .WaitAndRetryAsync(8, retry => TimeSpan.FromSeconds(Math.Pow(2, retry))));
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

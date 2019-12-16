@@ -13,30 +13,32 @@ namespace TeamA.PurchaseOrders.Services.Services
     public class UndercuttersService : IUndercuttersService, IOrdersService
     {
         private HttpClient _client;
-        public UndercuttersService(HttpClient client)
+
+        private IHttpClientFactory _clientFactory;
+        public UndercuttersService(HttpClient client, IHttpClientFactory clientFactory)
         {
             _client = client;
-        }
-
-        public UndercuttersService()
-        {
+            _clientFactory = clientFactory;
         }
 
         public async Task<List<ExternalProductDto>> GetProducts()
         {
             try
             {
-                using (HttpResponseMessage response = await _client.GetAsync("api/product"))
+                using (var client = _clientFactory.CreateClient("background"))
                 {
-                    if (response.IsSuccessStatusCode)
+                    using (HttpResponseMessage response = await _client.GetAsync("api/product"))
                     {
-                        var products = await response.Content.ReadAsAsync<List<ExternalProductDto>>();
-                        foreach (var product in products)
+                        if (response.IsSuccessStatusCode)
                         {
-                            product.Source = "Undercutters";
+                            var products = await response.Content.ReadAsAsync<List<ExternalProductDto>>();
+                            foreach (var product in products)
+                            {
+                                product.Source = "Undercutters";
+                            }
+                            return products;
+
                         }
-                        return products;
-                        
                     }
                 }
             }

@@ -12,10 +12,6 @@ namespace TeamA.PurchaseOrders.Services.Services
     {
         private StoreClient _storeClient;
 
-        public BazzasBazaarService()
-        {
-        }
-
         public BazzasBazaarService(StoreClient storeClient)
         {
             _storeClient = storeClient;
