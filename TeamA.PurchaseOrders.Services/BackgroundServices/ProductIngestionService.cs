@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Hosting;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -12,14 +13,13 @@ namespace TeamA.PurchaseOrders.Services.BackgroundServices
     // Code here influenced by lee conlin's blog on recurring tasks in .net core
     public class ProductIngestionService : IHostedService, IDisposable
     {
-        private IProductsService _productsService;
         private Task _executingTask;
         private readonly CancellationTokenSource _stoppingCts = new CancellationTokenSource();
-        public IServiceProvider Services { get; }
+        public IServiceScopeFactory _scopeFactory { get; }
 
-        public ProductIngestionService(IServiceProvider services)
+        public ProductIngestionService(IServiceScopeFactory scopeFactory)
         {
-            Services = services;
+            _scopeFactory = scopeFactory;
         }
 
         public Task StartAsync(CancellationToken cancellationToken)
@@ -43,13 +43,18 @@ namespace TeamA.PurchaseOrders.Services.BackgroundServices
             // This will cause the loop to stop if the service is stopped
             while (!stoppingToken.IsCancellationRequested)
             {
-                await _productsService.GetAndSaveProducts();
+                // Due to this being IHostedService, it has no scope meaning we must create our own
+                // Use the injected scope factory to create our scope
+                using (var scope = _scopeFactory.CreateScope())
+                {
+                    // consume our products service through the provided scope
+                    var productsService = scope.ServiceProvider.GetRequiredService<IProductsService>();
+                    await productsService.GetAndSaveProducts();
+                }
 
                 // Wait 5 minutes before running again.
-                await Task.Delay(TimeSpan.FromMinutes(1), stoppingToken);
+                await Task.Delay(TimeSpan.FromMinutes(5), stoppingToken);
             }
-
-            //todo: implement service https://github.com/aspnet/AspNetCore.Docs/blob/master/aspnetcore/fundamentals/host/hosted-services/samples/2.x/BackgroundTasksSample/Services/ConsumeScopedServiceHostedService.cs
         }
 
         public async Task StopAsync(CancellationToken cancellationToken)
