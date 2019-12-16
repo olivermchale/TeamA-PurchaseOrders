@@ -10,8 +10,8 @@ using TeamA.PurchaseOrders.Data;
 namespace TeamA.PurchaseOrders.Data.Migrations
 {
     [DbContext(typeof(PurchaseOrdersDb))]
-    [Migration("20191212142558_source-update")]
-    partial class sourceupdate
+    [Migration("20191216144349_initial")]
+    partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -40,6 +40,43 @@ namespace TeamA.PurchaseOrders.Data.Migrations
                     b.HasKey("ID");
 
                     b.ToTable("PaymentInformation");
+                });
+
+            modelBuilder.Entity("TeamA.PurchaseOrders.Models.Dtos.ProductDto", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<int>("BrandId");
+
+                    b.Property<string>("BrandName");
+
+                    b.Property<int>("CategoryId");
+
+                    b.Property<string>("CategoryName");
+
+                    b.Property<string>("Description")
+                        .IsRequired();
+
+                    b.Property<string>("Ean")
+                        .IsRequired();
+
+                    b.Property<bool?>("ExpectedRestock");
+
+                    b.Property<int>("ExternalId");
+
+                    b.Property<bool>("InStock");
+
+                    b.Property<string>("Name")
+                        .IsRequired();
+
+                    b.Property<double>("Price");
+
+                    b.Property<string>("Source");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Products");
                 });
 
             modelBuilder.Entity("TeamA.PurchaseOrders.Models.Dtos.PurchaseOrderDto", b =>

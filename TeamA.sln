@@ -11,7 +11,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TeamA.PurchaseOrders.Servic
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TeamA.PurchaseOrders.Models", "TeamA.PurchaseOrders.Models\TeamA.PurchaseOrders.Models.csproj", "{D39B63B8-1D53-4A1A-8B93-82DDF0174877}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TeamA.PurchaseOrders.Repository", "TeamA.PurchaseOrders.Repository\TeamA.PurchaseOrders.Repository.csproj", "{C0C687BC-E0FC-4190-A2A7-710734B37FEE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TeamA.PurchaseOrders.Repository", "TeamA.PurchaseOrders.Repository\TeamA.PurchaseOrders.Repository.csproj", "{C0C687BC-E0FC-4190-A2A7-710734B37FEE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

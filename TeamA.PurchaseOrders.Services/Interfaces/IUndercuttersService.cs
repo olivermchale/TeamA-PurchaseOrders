@@ -9,8 +9,8 @@ namespace TeamA.PurchaseOrders.Services.Interfaces
 {
     public interface IUndercuttersService : IOrdersService
     {
-        Task<List<ProductDto>> GetProducts();
+        Task<List<ExternalProductDto>> GetProducts();
 
-        Task<ProductDto> GetProduct(int id);
+        Task<ExternalProductDto> GetProduct(int id);
     }
 }

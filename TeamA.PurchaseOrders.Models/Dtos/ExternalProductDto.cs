@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 using System.Text;
+using System.Xml.Serialization;
 
 namespace TeamA.PurchaseOrders.Models.Dtos
 {
-    public class ProductDto
+    public class ExternalProductDto
     {
-        public Guid Id { get; set; }
-        public int ExternalId { get; set; }
+        public int Id { get; set; }
         public int BrandId { get; set; }
         public string BrandName { get; set; }
         public int CategoryId { get; set; }

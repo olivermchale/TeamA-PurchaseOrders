@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TeamA.PurchaseOrders.Models.Dtos;
 using TeamA.PurchaseOrders.Models.ViewModels;
+using TeamA.PurchaseOrders.Repository.Interfaces;
 using TeamA.PurchaseOrders.Services.Interfaces;
 
 namespace TeamA.PurchaseOrders.Services.Services
@@ -12,18 +15,21 @@ namespace TeamA.PurchaseOrders.Services.Services
         private readonly IUndercuttersService _undercuttersService;
         private readonly IDodgyDealersService _dodgyDealersService;
         private readonly IBazzasBazaarService _bazzasBazaarService;
+        private IProductsRepository _productsRepository;
 
-        public ProductsService(IUndercuttersService undercuttersService, IDodgyDealersService dodgyDealersService, IBazzasBazaarService bazzasBazaarService)
+        public ProductsService(IUndercuttersService undercuttersService, IDodgyDealersService dodgyDealersService, IBazzasBazaarService bazzasBazaarService, IProductsRepository productsRepository)
         {
             _undercuttersService = undercuttersService;
             _dodgyDealersService = dodgyDealersService;
             _bazzasBazaarService = bazzasBazaarService;
+            _productsRepository = productsRepository;
         }
 
-        public async Task<List<ProductListVm>> GetProducts()
+        public async Task<bool> GetAndSaveProducts()
         {
             var undercuttersProducts = await _undercuttersService.GetProducts();
             var dodgyDealersProducts = await _dodgyDealersService.GetProducts();
+            var bazzasBazaarProducts = await _bazzasBazaarService.GetAllProducts();
 
             var undercuttersList = new ProductListVm
             {
@@ -37,7 +43,18 @@ namespace TeamA.PurchaseOrders.Services.Services
                 Products = dodgyDealersProducts
             };
 
-            return new List<ProductListVm> { undercuttersList, dodgyDealersList };
+            var bazzasBazaarList = new ProductListVm
+            {
+                Source = "BazzasBazaar",
+                Products = bazzasBazaarProducts
+            };
+
+            return await _productsRepository.SaveProducts(undercuttersProducts.Concat(dodgyDealersProducts).Concat(bazzasBazaarProducts));
+        }
+
+        public async Task<List<ProductDto>> GetProducts()
+        {
+            return await _productsRepository.GetProducts();
         }
 
         public async Task<List<ProductItemVm>> GetProduct(int id)

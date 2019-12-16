@@ -8,6 +8,6 @@ namespace TeamA.PurchaseOrders.Models.ViewModels
     public class ProductListVm
     {
         public string Source { get; set; }
-        public List<ProductDto> Products { get; set; }
+        public List<ExternalProductDto> Products { get; set; }
     }
 }

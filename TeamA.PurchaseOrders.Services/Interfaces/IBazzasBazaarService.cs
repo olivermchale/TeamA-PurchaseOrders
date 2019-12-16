@@ -9,6 +9,8 @@ namespace TeamA.PurchaseOrders.Services.Interfaces
 {
     public interface IBazzasBazaarService : IOrdersService
     {
-        Task<ProductDto> GetProduct(int id);
+        Task<ExternalProductDto> GetProduct(int id);
+
+        Task<List<ExternalProductDto>> GetAllProducts();
     }
 }

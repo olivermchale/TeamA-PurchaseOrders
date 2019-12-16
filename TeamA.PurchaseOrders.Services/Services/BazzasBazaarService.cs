@@ -26,12 +26,12 @@ namespace TeamA.PurchaseOrders.Services.Services
             throw new NotImplementedException();
         }
 
-        public async Task<ProductDto> GetProduct(int id)
+        public async Task<ExternalProductDto> GetProduct(int id)
         {
             await _storeClient.OpenAsync();
             var x = await _storeClient.GetProductByIdAsync(id);
             await _storeClient.CloseAsync();
-            return new ProductDto
+            return new ExternalProductDto
             {
                 CategoryId = x.CategoryId,
                 CategoryName = x.CategoryName,
@@ -41,8 +41,36 @@ namespace TeamA.PurchaseOrders.Services.Services
                 Id = x.Id,
                 InStock = x.InStock,
                 Name = x.Name,
-                Price = x.PriceForOne
+                Price = x.PriceForOne,
+                Source = "BazzasBazaar"
             };
+        }
+
+        public async Task<List<ExternalProductDto>> GetAllProducts()
+        {
+            var products = new List<ExternalProductDto>();
+            await _storeClient.OpenAsync();
+            var categories = await _storeClient.GetAllCategoriesAsync();
+            foreach (var category in categories)
+            {
+                var productArray = await _storeClient.GetFilteredProductsAsync(category.Id, category.Name, 0, 1000);
+                foreach(var product in productArray)
+                {
+                    products.Add(new ExternalProductDto
+                    {
+                        CategoryId = product.CategoryId,
+                        CategoryName = product.CategoryName,
+                        Description = product.Description,
+                        Ean = product.Ean,
+                        ExpectedRestock = product.ExpectedRestock == null ? false : true,
+                        Id = product.Id,
+                        InStock = product.InStock,
+                        Name = product.Name,
+                        Price = product.PriceForOne
+                    });
+                }
+            }
+            return products;
         }
         
     }

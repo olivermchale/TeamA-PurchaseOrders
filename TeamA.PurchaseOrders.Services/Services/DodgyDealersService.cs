@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
@@ -24,7 +25,7 @@ namespace TeamA.PurchaseOrders.Services.Services
         {
             _client = client;
         }
-        public async Task<List<ProductDto>> GetProducts()
+        public async Task<List<ExternalProductDto>> GetProducts()
         {
             try
             {
@@ -32,7 +33,11 @@ namespace TeamA.PurchaseOrders.Services.Services
                 {
                     if (response.IsSuccessStatusCode)
                     {
-                        var products = await response.Content.ReadAsAsync<List<ProductDto>>();
+                        var products = await response.Content.ReadAsAsync<List<ExternalProductDto>>();
+                        foreach(var product in products)
+                        {
+                            product.Source = "DodgyDealers";
+                        }
                         return products;
                     }
                 }
@@ -41,10 +46,10 @@ namespace TeamA.PurchaseOrders.Services.Services
             {
 
             }
-            return null;
+            return new List<ExternalProductDto>();
         }
 
-        public async Task<ProductDto> GetProduct(int id)
+        public async Task<ExternalProductDto> GetProduct(int id)
         {
             try
             {
@@ -52,7 +57,7 @@ namespace TeamA.PurchaseOrders.Services.Services
                 {
                     if (response.IsSuccessStatusCode)
                     {
-                        var product = await response.Content.ReadAsAsync<ProductDto>();
+                        var product = await response.Content.ReadAsAsync<ExternalProductDto>();
                         return product;
                     }
                 }

@@ -10,12 +10,14 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Polly;
 using TeamA.PurchaseOrders.Data;
 using TeamA.PurchaseOrders.Repository.Interfaces;
 using TeamA.PurchaseOrders.Repository.Repositories;
+using TeamA.PurchaseOrders.Services.BackgroundServices;
 using TeamA.PurchaseOrders.Services.Factories;
 using TeamA.PurchaseOrders.Services.Interfaces;
 using TeamA.PurchaseOrders.Services.Services;
@@ -56,9 +58,12 @@ namespace TeamA.PurchaseOrdersAPI
             services.AddScoped<IDodgyDealersService, DodgyDealersService>();
             services.AddScoped<IBazzasBazaarService, BazzasBazaarService>();
             services.AddScoped<IOrdersRepository, OrdersRepository>();
+            services.AddScoped<IProductsRepository, ProductsRepository>();
 
             services.AddScoped<StoreClient>();
             services.AddScoped<OrdersFactory>();
+
+            services.AddHostedService<ProductIngestionService>();
 
             var undercuttersAddress = Configuration.GetValue<Uri>("UndercuttersUri");
 
@@ -89,7 +94,7 @@ namespace TeamA.PurchaseOrdersAPI
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, Microsoft.AspNetCore.Hosting.IHostingEnvironment env)
         {
             if (env.IsDevelopment())
             {

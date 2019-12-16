@@ -22,7 +22,7 @@ namespace TeamA.PurchaseOrders.Services.Services
         {
         }
 
-        public async Task<List<ProductDto>> GetProducts()
+        public async Task<List<ExternalProductDto>> GetProducts()
         {
             try
             {
@@ -30,7 +30,11 @@ namespace TeamA.PurchaseOrders.Services.Services
                 {
                     if (response.IsSuccessStatusCode)
                     {
-                        var products = await response.Content.ReadAsAsync<List<ProductDto>>();
+                        var products = await response.Content.ReadAsAsync<List<ExternalProductDto>>();
+                        foreach (var product in products)
+                        {
+                            product.Source = "Undercutters";
+                        }
                         return products;
                         
                     }
@@ -43,7 +47,7 @@ namespace TeamA.PurchaseOrders.Services.Services
             return null;
         }
 
-        public async Task<ProductDto> GetProduct(int id)
+        public async Task<ExternalProductDto> GetProduct(int id)
         {
             try
             {
@@ -51,7 +55,7 @@ namespace TeamA.PurchaseOrders.Services.Services
                 {
                     if (response.IsSuccessStatusCode)
                     {
-                        var product = await response.Content.ReadAsAsync<ProductDto>();
+                        var product = await response.Content.ReadAsAsync<ExternalProductDto>();
                         return product;
 
                     }

@@ -8,6 +8,7 @@ namespace TeamA.PurchaseOrders.Data
         public DbSet<PurchaseOrderDto> PurchaseOrders { get; set; }
         public DbSet<PurchaseStatusDto> PurchaseStatus { get; set; }
         public DbSet<PaymentInformationDto> PaymentInformation { get; set; }
+        public DbSet<ProductDto> Products { get; set; }
 
         public PurchaseOrdersDb(DbContextOptions<PurchaseOrdersDb> options) : base(options)
         {
@@ -51,6 +52,16 @@ namespace TeamA.PurchaseOrders.Data
                 x.Property(p => p.PurchasedOn).IsRequired();
                 x.Property(p => p.Quantity).IsRequired();
                 x.Property(p => p.StatusID).IsRequired();
+            });
+
+            modelBuilder.Entity<ProductDto>(x =>
+            {
+                x.Property(p => p.Id).IsRequired();
+                x.Property(p => p.Ean).IsRequired();
+                x.Property(p => p.Description).IsRequired();
+                x.Property(p => p.InStock).IsRequired();
+                x.Property(p => p.Name).IsRequired();
+                x.Property(p => p.Price).IsRequired();
             });
         }
 

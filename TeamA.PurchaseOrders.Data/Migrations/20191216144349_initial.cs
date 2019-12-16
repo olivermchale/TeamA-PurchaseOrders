@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace TeamA.PurchaseOrders.Data.Migrations
 {
-    public partial class sourceupdate : Migration
+    public partial class initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -20,6 +20,29 @@ namespace TeamA.PurchaseOrders.Data.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_PaymentInformation", x => x.ID);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Products",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(nullable: false),
+                    ExternalId = table.Column<int>(nullable: false),
+                    BrandId = table.Column<int>(nullable: false),
+                    BrandName = table.Column<string>(nullable: true),
+                    CategoryId = table.Column<int>(nullable: false),
+                    CategoryName = table.Column<string>(nullable: true),
+                    Description = table.Column<string>(nullable: false),
+                    Ean = table.Column<string>(nullable: false),
+                    ExpectedRestock = table.Column<bool>(nullable: true),
+                    InStock = table.Column<bool>(nullable: false),
+                    Name = table.Column<string>(nullable: false),
+                    Price = table.Column<double>(nullable: false),
+                    Source = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Products", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -83,6 +106,9 @@ namespace TeamA.PurchaseOrders.Data.Migrations
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "Products");
+
             migrationBuilder.DropTable(
                 name: "PurchaseOrders");
 
