@@ -10,8 +10,8 @@ using TeamA.PurchaseOrders.Data;
 namespace TeamA.PurchaseOrders.Data.Migrations
 {
     [DbContext(typeof(PurchaseOrdersDb))]
-    [Migration("20191216144349_initial")]
-    partial class initial
+    [Migration("20191218151158_init")]
+    partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -96,7 +96,7 @@ namespace TeamA.PurchaseOrders.Data.Migrations
                     b.Property<string>("Postcode")
                         .IsRequired();
 
-                    b.Property<int>("ProductID");
+                    b.Property<Guid>("ProductID");
 
                     b.Property<string>("ProductName")
                         .IsRequired();

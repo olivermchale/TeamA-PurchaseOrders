@@ -62,7 +62,8 @@ namespace TeamA.PurchaseOrders.Services.Services
                         Id = product.Id,
                         InStock = product.InStock,
                         Name = product.Name,
-                        Price = product.PriceForOne
+                        Price = product.PriceForOne,
+                        Source = "BazzasBazaar"
                     });
                 }
             }

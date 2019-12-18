@@ -94,7 +94,7 @@ namespace TeamA.PurchaseOrders.Data.Migrations
                     b.Property<string>("Postcode")
                         .IsRequired();
 
-                    b.Property<int>("ProductID");
+                    b.Property<Guid>("ProductID");
 
                     b.Property<string>("ProductName")
                         .IsRequired();

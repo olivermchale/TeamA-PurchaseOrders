@@ -33,7 +33,7 @@ namespace TeamA.PurchaseOrders.Services.Services
             {
                 using (var client = _clientFactory.CreateClient("background"))
                 {
-                    using (HttpResponseMessage response = await _client.GetAsync("http://dodgydealers.azurewebsites.net/api/product"))
+                    using (HttpResponseMessage response = await client.GetAsync("http://dodgydealers.azurewebsites.net/api/product"))
                     {
                         if (response.IsSuccessStatusCode)
                         {
@@ -96,7 +96,10 @@ namespace TeamA.PurchaseOrders.Services.Services
                         var product = await response.Content.ReadAsAsync<OrderCreatedDto>();
                         return product;
                     }
-                    return null;
+                    return new OrderCreatedDto
+                    {
+                        Success = false
+                    };
                 }
             }
             catch (Exception e)

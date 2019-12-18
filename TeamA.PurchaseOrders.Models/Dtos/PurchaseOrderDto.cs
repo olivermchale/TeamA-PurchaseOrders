@@ -11,7 +11,7 @@ namespace TeamA.PurchaseOrders.Models.Dtos
 
         public Guid PurchasedBy { get; set; }
 
-        public int ProductID { get; set; }
+        public Guid ProductID { get; set; }
 
         public DateTime? PurchasedOn { get; set; }
 

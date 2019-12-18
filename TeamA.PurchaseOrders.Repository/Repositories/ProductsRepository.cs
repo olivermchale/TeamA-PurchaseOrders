@@ -79,5 +79,23 @@ namespace TeamA.PurchaseOrders.Repository.Repositories
             await _context.SaveChangesAsync();
             return true;
         }
+
+        public async Task<List<ProductDto>> GetProductsByEan(string ean)
+        {
+            if (ean == null)
+            {
+                return null;
+            }
+            try
+            {
+                var products = await _context.Products.Where(p => p.Ean == ean).ToListAsync();
+                return products;
+            }
+            catch(Exception e)
+            {
+                // todo: exception handling
+            }
+            return null;
+        }
     }
 }

@@ -31,24 +31,6 @@ namespace TeamA.PurchaseOrders.Services.Services
             var dodgyDealersProducts = await _dodgyDealersService.GetProducts();
             var bazzasBazaarProducts = await _bazzasBazaarService.GetAllProducts();
 
-            var undercuttersList = new ProductListVm
-            {
-                Source = "Undercutters",
-                Products = undercuttersProducts
-            };
-
-            var dodgyDealersList = new ProductListVm
-            {
-                Source = "DodgyDealers",
-                Products = dodgyDealersProducts
-            };
-
-            var bazzasBazaarList = new ProductListVm
-            {
-                Source = "BazzasBazaar",
-                Products = bazzasBazaarProducts
-            };
-
             return await _productsRepository.SaveProducts(undercuttersProducts.Concat(dodgyDealersProducts).Concat(bazzasBazaarProducts));
         }
 
@@ -83,6 +65,11 @@ namespace TeamA.PurchaseOrders.Services.Services
 
 
             return new List<ProductItemVm> { undercuttersProductVm, dodgyDealersProductVm, bazaasBazaarProductVm };
+        }
+
+        public async Task<List<ProductDto>> GetProductsByEan(string ean)
+        {
+            return await _productsRepository.GetProductsByEan(ean);
         }
     }
 }

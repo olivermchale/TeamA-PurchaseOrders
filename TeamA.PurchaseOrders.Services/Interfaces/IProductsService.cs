@@ -14,5 +14,7 @@ namespace TeamA.PurchaseOrders.Services.Interfaces
         Task<List<ProductDto>> GetProducts();
 
         Task<List<ProductItemVm>> GetProduct(int id);
+
+        Task<List<ProductDto>> GetProductsByEan(string ean);
     }
 }

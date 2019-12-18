@@ -11,5 +11,7 @@ namespace TeamA.PurchaseOrders.Repository.Interfaces
         Task<List<ProductDto>> GetProducts();
 
         Task<bool> SaveProducts(IEnumerable<ExternalProductDto> products);
+
+        Task<List<ProductDto>> GetProductsByEan(string ean);
     }
 }

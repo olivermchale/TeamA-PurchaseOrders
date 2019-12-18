@@ -25,7 +25,7 @@ namespace TeamA.PurchaseOrdersAPI.Controllers
         public async Task<IActionResult> GetProducts()
         {
             var products = await _productsService.GetAndSaveProducts();
-            if(products == null)
+            if(products == false)
             {
                 return NotFound();
             }
@@ -42,10 +42,10 @@ namespace TeamA.PurchaseOrdersAPI.Controllers
             }
             return Ok(products);
         }
-        [HttpGet("getProduct")]
-        public async Task<IActionResult> GetProduct(int id)
+        [HttpGet("getProductsByEan")]
+        public async Task<IActionResult> GetProducts(string ean)
         {
-            var products = await _productsService.GetProduct(id);
+            var products = await _productsService.GetProductsByEan(ean);
             if(products == null)
             {
                 return NotFound();

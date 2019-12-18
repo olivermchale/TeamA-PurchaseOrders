@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace TeamA.PurchaseOrders.Data.Migrations
 {
-    public partial class initial : Migration
+    public partial class init : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -63,7 +63,7 @@ namespace TeamA.PurchaseOrders.Data.Migrations
                 {
                     ID = table.Column<Guid>(nullable: false),
                     PurchasedBy = table.Column<Guid>(nullable: false),
-                    ProductID = table.Column<int>(nullable: false),
+                    ProductID = table.Column<Guid>(nullable: false),
                     PurchasedOn = table.Column<DateTime>(nullable: false),
                     StatusID = table.Column<Guid>(nullable: false),
                     PaymentInformationID = table.Column<Guid>(nullable: false),
