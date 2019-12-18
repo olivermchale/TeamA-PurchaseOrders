@@ -33,6 +33,11 @@ namespace TeamA.PurchaseOrdersAPI.Controllers
             {
                 var service = _ordersFactory.Create(orderInfo.Source);
                 var order = await service.CreateOrder(orderInfo.PaymentInformation.CardName, orderInfo.PaymentInformation.CardNumber, orderInfo.ProductID, orderInfo.Quantity);
+                if(order.Success == false)
+                {
+                    await _ordersRepository.UpdateOrderAsync(orderId, null, "Insucfficient Stock");
+                    return BadRequest("Insucfficient Stock");
+                }
                 if(order != null)
                 {
                     var success = await _ordersRepository.UpdateOrderAsync(orderId, order, "Complete");

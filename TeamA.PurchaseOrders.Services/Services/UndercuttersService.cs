@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
@@ -27,7 +28,7 @@ namespace TeamA.PurchaseOrders.Services.Services
             {
                 using (var client = _clientFactory.CreateClient("background"))
                 {
-                    using (HttpResponseMessage response = await _client.GetAsync("api/product"))
+                    using (HttpResponseMessage response = await _client.GetAsync("http://undercutters.azurewebsites.net/api/product"))
                     {
                         if (response.IsSuccessStatusCode)
                         {
@@ -53,7 +54,7 @@ namespace TeamA.PurchaseOrders.Services.Services
         {
             try
             {
-                using (HttpResponseMessage response = await _client.GetAsync($"api/product?id={id}"))
+                using (HttpResponseMessage response = await _client.GetAsync($"http://undercutters.azurewebsites.net/api/product?id={id}"))
                 {
                     if (response.IsSuccessStatusCode)
                     {
@@ -88,6 +89,17 @@ namespace TeamA.PurchaseOrders.Services.Services
                     {
                         var product = await response.Content.ReadAsAsync<OrderCreatedDto>();
                         return product;
+                    }
+                    if(response.StatusCode == HttpStatusCode.Forbidden)
+                    {
+                        var responseString = await response.Content.ReadAsStringAsync();
+                        if (responseString.Contains("insufficient stock"))
+                        {
+                            return new OrderCreatedDto
+                            {
+                                Success = false
+                            };
+                        }
                     }
                     return null;
                 }

@@ -33,7 +33,7 @@ namespace TeamA.PurchaseOrders.Services.Services
             {
                 using (var client = _clientFactory.CreateClient("background"))
                 {
-                    using (HttpResponseMessage response = await _client.GetAsync("api/product"))
+                    using (HttpResponseMessage response = await _client.GetAsync("http://dodgydealers.azurewebsites.net/api/product"))
                     {
                         if (response.IsSuccessStatusCode)
                         {
@@ -60,7 +60,7 @@ namespace TeamA.PurchaseOrders.Services.Services
             {
                 using (var client = _clientFactory.CreateClient("background"))
                 {
-                    using (HttpResponseMessage response = await client.GetAsync($"api/product?id={id}"))
+                    using (HttpResponseMessage response = await client.GetAsync($"http://dodgydealers.azurewebsites.net/api/product?id={id}"))
                     {
                         if (response.IsSuccessStatusCode)
                         {
