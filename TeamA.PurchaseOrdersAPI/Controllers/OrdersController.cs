@@ -53,7 +53,22 @@ namespace TeamA.PurchaseOrdersAPI.Controllers
         public async Task<IActionResult> GetOrders()
         {
             var orders = await _ordersRepository.GetOrders();
+            if(orders == null)
+            {
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+            }
             return Ok(orders);
+        }
+
+        [HttpGet("getOrder")]
+        public async Task<IActionResult> GetOrder(Guid id)
+        {
+            var order = await _ordersRepository.GetOrder(id);
+            if (order != null)
+            {
+                return Ok(order);
+            }
+            return NotFound();
         }
     }
 }

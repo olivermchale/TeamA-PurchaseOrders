@@ -12,6 +12,8 @@ namespace TeamA.PurchaseOrders.Repository.Interfaces
         Task<Guid?> CreateOrder(PurchaseOrderDto purchaseOrder);
 
         Task<OrderListVm> GetOrders();
+
+        Task<PurchaseOrderDto> GetOrder(Guid id);
         Task <bool> UpdateOrderAsync(Guid? orderId, OrderCreatedDto createdOrder, string status);
     }
 }
