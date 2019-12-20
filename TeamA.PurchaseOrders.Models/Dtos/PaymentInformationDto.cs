@@ -9,7 +9,7 @@ namespace TeamA.PurchaseOrders.Models.Dtos
     {
         public Guid ID { get; set; } = Guid.NewGuid();
 
-        [Required, MinLength(12), DataType(DataType.CreditCard)]
+        [Required, MinLength(16), MaxLength(16), DataType(DataType.CreditCard)]
         public string CardNumber { get; set; }
 
         [Required]

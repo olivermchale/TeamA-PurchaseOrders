@@ -13,7 +13,7 @@ namespace TeamA.PurchaseOrders.Repository.Interfaces
 
         Task<OrderListVm> GetOrders();
 
-        Task<PurchaseOrderDto> GetOrder(Guid id);
+        Task<OrderDetailVm> GetOrder(Guid id);
         Task <bool> UpdateOrderAsync(Guid? orderId, OrderCreatedDto createdOrder, string status);
     }
 }
