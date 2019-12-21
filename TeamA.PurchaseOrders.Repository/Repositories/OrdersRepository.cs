@@ -42,10 +42,11 @@ namespace TeamA.PurchaseOrders.Repository.Repositories
                             {
                                 Id = b.ID,
                                 OrderStatus = b.PurchaseStatus.Name,
-                                Price = b.ProductPrice,
+                                Price = b.ProductPrice * b.Quantity,
                                 ProductName = b.ProductName,
                                 Quantity = b.Quantity
                             }).ToListAsync();
+                orders.Reverse();
                 return new OrderListVm
                 {
                     Orders = orders
