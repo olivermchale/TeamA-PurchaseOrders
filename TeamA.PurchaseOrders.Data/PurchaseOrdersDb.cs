@@ -1,14 +1,14 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System;
-using TeamA.PurchaseOrders.Data.Models;
+using TeamA.PurchaseOrders.Models.Dtos;
 
 namespace TeamA.PurchaseOrders.Data
 {
     public class PurchaseOrdersDb : DbContext
     {
-        public DbSet<PurchaseOrder> PurchaseOrders { get; set; }
-        public DbSet<PurchaseStatus> PurchaseStatus { get; set; }
-        public DbSet<PaymentInformation> PaymentInformation { get; set; }
+        public DbSet<PurchaseOrderDto> PurchaseOrders { get; set; }
+        public DbSet<PurchaseStatusDto> PurchaseStatus { get; set; }
+        public DbSet<PaymentInformationDto> PaymentInformation { get; set; }
+        public DbSet<ProductDto> Products { get; set; }
 
         public PurchaseOrdersDb(DbContextOptions<PurchaseOrdersDb> options) : base(options)
         {
@@ -24,25 +24,25 @@ namespace TeamA.PurchaseOrders.Data
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<PurchaseStatus>(x =>
+            modelBuilder.Entity<PurchaseStatusDto>(x =>
             {
-                x.Property(p => p.ID).IsRequired();
+                x.Property(p => p.Id).IsRequired();
                 x.Property(p => p.Name).IsRequired();
             });
 
-            modelBuilder.Entity<PaymentInformation>(x =>
+            modelBuilder.Entity<PaymentInformationDto>(x =>
             {
                 x.Property(p => p.ID).IsRequired();
-                x.Property(p => p.CardholderName).IsRequired();
+                x.Property(p => p.CardName).IsRequired();
                 x.Property(p => p.CardNumber).IsRequired();
-                x.Property(p => p.CVC).IsRequired();
-                x.Property(p => p.ExpiryDate).IsRequired();
+                x.Property(p => p.CardCVC).IsRequired();
+                x.Property(p => p.CardExpiry).IsRequired();
             });
 
-            modelBuilder.Entity<PurchaseOrder>(x =>
+            modelBuilder.Entity<PurchaseOrderDto>(x =>
             {
                 x.Property(p => p.ID).IsRequired();
-                x.Property(p => p.Cost).IsRequired();
+                x.Property(p => p.ProductPrice).IsRequired();
                 x.Property(p => p.IsDeleted).IsRequired();
                 x.HasOne(p => p.PaymentInformation).WithMany().HasForeignKey(p => p.PaymentInformationID).IsRequired();
                 x.HasOne(p => p.PurchaseStatus).WithMany().HasForeignKey(p => p.StatusID).IsRequired();
@@ -52,6 +52,16 @@ namespace TeamA.PurchaseOrders.Data
                 x.Property(p => p.PurchasedOn).IsRequired();
                 x.Property(p => p.Quantity).IsRequired();
                 x.Property(p => p.StatusID).IsRequired();
+            });
+
+            modelBuilder.Entity<ProductDto>(x =>
+            {
+                x.Property(p => p.Id).IsRequired();
+                x.Property(p => p.Ean).IsRequired();
+                x.Property(p => p.Description).IsRequired();
+                x.Property(p => p.InStock).IsRequired();
+                x.Property(p => p.Name).IsRequired();
+                x.Property(p => p.Price).IsRequired();
             });
         }
 

@@ -13,9 +13,9 @@ namespace TeamA.PurchaseOrders.Data.Migrations
                 {
                     ID = table.Column<Guid>(nullable: false),
                     CardNumber = table.Column<string>(nullable: false),
-                    ExpiryDate = table.Column<string>(nullable: false),
-                    CVC = table.Column<string>(nullable: false),
-                    CardholderName = table.Column<string>(nullable: false)
+                    CardExpiry = table.Column<DateTime>(nullable: false),
+                    CardCVC = table.Column<string>(nullable: false),
+                    CardName = table.Column<string>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -23,15 +23,38 @@ namespace TeamA.PurchaseOrders.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Products",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(nullable: false),
+                    ExternalId = table.Column<int>(nullable: false),
+                    BrandId = table.Column<int>(nullable: false),
+                    BrandName = table.Column<string>(nullable: true),
+                    CategoryId = table.Column<int>(nullable: false),
+                    CategoryName = table.Column<string>(nullable: true),
+                    Description = table.Column<string>(nullable: false),
+                    Ean = table.Column<string>(nullable: false),
+                    ExpectedRestock = table.Column<bool>(nullable: true),
+                    InStock = table.Column<bool>(nullable: false),
+                    Name = table.Column<string>(nullable: false),
+                    Price = table.Column<double>(nullable: false),
+                    Source = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Products", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "PurchaseStatus",
                 columns: table => new
                 {
-                    ID = table.Column<Guid>(nullable: false),
+                    Id = table.Column<Guid>(nullable: false),
                     Name = table.Column<string>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_PurchaseStatus", x => x.ID);
+                    table.PrimaryKey("PK_PurchaseStatus", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -44,9 +67,13 @@ namespace TeamA.PurchaseOrders.Data.Migrations
                     PurchasedOn = table.Column<DateTime>(nullable: false),
                     StatusID = table.Column<Guid>(nullable: false),
                     PaymentInformationID = table.Column<Guid>(nullable: false),
+                    ExternalID = table.Column<int>(nullable: false),
                     ProductName = table.Column<string>(nullable: false),
                     Quantity = table.Column<int>(nullable: false),
-                    Cost = table.Column<double>(nullable: false),
+                    ProductPrice = table.Column<double>(nullable: false),
+                    Address = table.Column<string>(nullable: false),
+                    Postcode = table.Column<string>(nullable: false),
+                    Source = table.Column<string>(nullable: true),
                     IsDeleted = table.Column<bool>(nullable: false)
                 },
                 constraints: table =>
@@ -62,7 +89,7 @@ namespace TeamA.PurchaseOrders.Data.Migrations
                         name: "FK_PurchaseOrders_PurchaseStatus_StatusID",
                         column: x => x.StatusID,
                         principalTable: "PurchaseStatus",
-                        principalColumn: "ID",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -79,6 +106,9 @@ namespace TeamA.PurchaseOrders.Data.Migrations
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "Products");
+
             migrationBuilder.DropTable(
                 name: "PurchaseOrders");
 
