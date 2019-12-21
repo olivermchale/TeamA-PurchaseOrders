@@ -21,24 +21,24 @@ namespace TeamA.PurchaseOrders.Models.Dtos
 
         public int ExternalID { get; set; }
 
-        [Required, MinLength(2)]
+        [Required(ErrorMessage ="Product Name is Required"), MinLength(2, ErrorMessage ="Invalid product name")]
         public string ProductName { get; set; }
 
-        [Required]
+        [Required(ErrorMessage ="Quantity is required")]
         public int Quantity { get; set; }
-        [Required, DataType(DataType.Currency)]
+        [Required(ErrorMessage = "Product Price is required"), DataType(DataType.Currency, ErrorMessage ="Invalid Currency")]
         public double ProductPrice { get; set; }
 
-        [Required, DataType(DataType.Text)]
+        [Required(ErrorMessage = "Address is required"), DataType(DataType.Text), MinLength(1, ErrorMessage="Address is required with a minumum length of 1")]
         public string Address { get; set; }
-        [Required, DataType(DataType.PostalCode)]
+        [Required(ErrorMessage = "Postcode is required"), DataType(DataType.PostalCode), MinLength(1, ErrorMessage = "Postcode is required with a minumum length of 1")]
         public string Postcode { get; set; }
 
         public string Source { get; set; }
 
         public bool IsDeleted { get; set; } = false;
 
-        [Required]
+        [Required(ErrorMessage = "Insufficient payment information")]
         public PaymentInformationDto PaymentInformation { get; set; }
 
         public PurchaseStatusDto PurchaseStatus { get; set; }
