@@ -1,4 +1,5 @@
-﻿using Polly;
+﻿using Microsoft.Extensions.Logging;
+using Polly;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -12,11 +13,13 @@ namespace TeamA.PurchaseOrders.Services.Services
     public class BazzasBazaarService : IBazzasBazaarService, IOrdersService
     {
         private StoreClient _storeClient;
+        private readonly ILogger<BazzasBazaarService> _logger;
         private Policy _retryPolicy;
 
-        public BazzasBazaarService(StoreClient storeClient)
+        public BazzasBazaarService(StoreClient storeClient, ILogger<BazzasBazaarService> logger)
         {
             _storeClient = storeClient;
+            _logger = logger;
             _retryPolicy = Policy
                .Handle<Exception>()
                .WaitAndRetry(
@@ -24,24 +27,30 @@ namespace TeamA.PurchaseOrders.Services.Services
                  retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)),
                  (exception, timeSpan, context) => {
                      var methodThatRaisedException = context["methodName"];
+                     _logger.LogError("Exception in " + methodThatRaisedException + " " + exception + exception.StackTrace);
                  });
         }
 
         public async Task<OrderCreatedDto> CreateOrder(string accountName, string cardNumber, int productId, int quantity)
         {
+            _logger.LogInformation("Create order - BazzasBazaarService");
            return await _retryPolicy.Execute(async () =>
            {
                try
                {
+                   _logger.LogInformation("Opening store client");
                    await _storeClient.OpenAsync();
+                   _logger.LogInformation("Creating an order");
                    var order = await _storeClient.CreateOrderAsync(accountName, cardNumber, productId, quantity);
                    if (order == null)
                    {
+                       _logger.LogError("Failed to create order");
                        return new OrderCreatedDto
                        {
                            Success = false
                        };
                    }
+                   _logger.LogInformation("Successfully created order, closing store client");
                    await _storeClient.CloseAsync();
                    return new OrderCreatedDto
                    {
@@ -59,7 +68,7 @@ namespace TeamA.PurchaseOrders.Services.Services
                }
                catch (Exception e)
                {
-                   // todo: exception handling
+                   _logger.LogError("Exception when creating order" + e + e.StackTrace);
                }
                return new OrderCreatedDto
                {
@@ -71,13 +80,16 @@ namespace TeamA.PurchaseOrders.Services.Services
 
         public async Task<ExternalProductDto> GetProduct(int id)
         {
+            _logger.LogInformation("Getting product with id: " + id);
             return await _retryPolicy.Execute(async () =>
             {
                 try
                 {
+                    _logger.LogInformation("Opening store client");
                     await _storeClient.OpenAsync();
                     var product = await _storeClient.GetProductByIdAsync(id);
                     await _storeClient.CloseAsync();
+                    _logger.LogInformation("Got product, closing store client");
                     return new ExternalProductDto
                     {
                         CategoryId = product.CategoryId,
@@ -94,7 +106,7 @@ namespace TeamA.PurchaseOrders.Services.Services
                 }
                 catch (Exception e)
                 {
-                    // todo: exception handling
+                    _logger.LogError("Exception when getting product with id: " + id + e + e.StackTrace);
                 }
                 return null;
             });
@@ -102,15 +114,19 @@ namespace TeamA.PurchaseOrders.Services.Services
 
         public async Task<List<ExternalProductDto>> GetAllProducts()
         {
+            _logger.LogInformation("Getting all products");
             return await _retryPolicy.Execute(async () =>
             {
                 try
                 {
                     var products = new List<ExternalProductDto>();
+                    _logger.LogInformation("Opening store client");
                     await _storeClient.OpenAsync();
+                    _logger.LogInformation("Getting all categories");
                     var categories = await _storeClient.GetAllCategoriesAsync();
                     foreach (var category in categories)
                     {
+                        _logger.LogInformation("Getting products for category: " + category.Name);
                         var productArray = await _storeClient.GetFilteredProductsAsync(category.Id, category.Name, 0, 1000);
                         foreach (var product in productArray)
                         {
@@ -129,11 +145,13 @@ namespace TeamA.PurchaseOrders.Services.Services
                             });
                         }
                     }
+                    _logger.LogInformation("Successfully got all products, closing client");
+                    await _storeClient.CloseAsync();
                     return products;
                 }
                 catch (Exception e)
                 {
-                    // todo: exception handling
+                    _logger.LogError("Exception when getting product" + e + e.StackTrace);
                 }
                 return null;
             });
