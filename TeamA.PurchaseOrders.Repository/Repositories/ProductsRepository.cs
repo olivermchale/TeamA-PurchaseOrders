@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,87 +14,115 @@ namespace TeamA.PurchaseOrders.Repository.Repositories
     public class ProductsRepository : IProductsRepository
     {
         private PurchaseOrdersDb _context;
-        public ProductsRepository(PurchaseOrdersDb context)
+        private readonly ILogger<ProductsRepository> _logger;
+        public ProductsRepository(PurchaseOrdersDb context, ILogger<ProductsRepository> logger)
         {
             _context = context;
+            _logger = logger;
         }
         public async Task<List<ProductDto>> GetProducts()
         {
-            return await _context.Products.Select(p => new ProductDto
+            _logger.LogInformation("Getting all products from database!");
+            try
             {
-                CategoryId = p.CategoryId,
-                CategoryName = p.CategoryName,
-                Description = p.Description,
-                Ean = p.Ean,
-                ExpectedRestock = p.ExpectedRestock,
-                Id = p.Id,
-                InStock = p.InStock,
-                Name = p.Name,
-                Price = p.Price,
-                Source = p.Source,
-                ExternalId = p.ExternalId
-            }).ToListAsync();
+                var products = await _context.Products.Select(p => new ProductDto
+                {
+                    CategoryId = p.CategoryId,
+                    CategoryName = p.CategoryName,
+                    Description = p.Description,
+                    Ean = p.Ean,
+                    ExpectedRestock = p.ExpectedRestock,
+                    Id = p.Id,
+                    InStock = p.InStock,
+                    Name = p.Name,
+                    Price = p.Price,
+                    Source = p.Source,
+                    ExternalId = p.ExternalId
+                }).ToListAsync();
+                _logger.LogInformation("Successfully retrieved products from database");
+                return products;
+            }
+            catch(Exception e)
+            {
+                _logger.LogError("Exception when getting products from database: " + e + e.StackTrace);
+            }
+            return null;
+
         }
 
         public async Task<bool> SaveProducts(IEnumerable<ExternalProductDto> products)
         {
-            foreach(var product in products)
+            _logger.LogInformation("Attempting to save products to database");
+            try
             {
-                if(!_context.Products.Any(p => p.Ean == product.Ean && p.Source == product.Source))
+                foreach (var product in products)
                 {
-                    // Product doesnt exist, add it
-                    var item = new ProductDto
+                    if (!_context.Products.Any(p => p.Ean == product.Ean && p.Source == product.Source))
                     {
-                        Id = Guid.NewGuid(),
-                        InStock = product.InStock,
-                        CategoryId = product.CategoryId,
-                        CategoryName = product.CategoryName,
-                        Description = product.Description,
-                        Ean = product.Ean,
-                        ExpectedRestock = product.ExpectedRestock,
-                        ExternalId = product.Id,
-                        Name = product.Name,
-                        Price = product.Price,
-                        Source = product.Source
-                    };
-                    await _context.Products.AddAsync(item);
-                }
-                else
-                {
-                    // Product exists, lets update it
-                    var existingProduct = await _context.Products.Where(s => s.Ean == product.Ean && s.Source == product.Source).FirstOrDefaultAsync();
-                    existingProduct.InStock = product.InStock;
-                    existingProduct.CategoryId = product.CategoryId;
-                    existingProduct.CategoryName = product.CategoryName;
-                    existingProduct.Description = product.Description;
-                    existingProduct.Ean = product.Ean;
-                    existingProduct.ExpectedRestock = product.ExpectedRestock;
-                    existingProduct.ExternalId = product.Id;
-                    existingProduct.Name = product.Name;
-                    existingProduct.Price = product.Price;
-                    existingProduct.Source = product.Source;
+                        // Product doesnt exist, add it
+                        var item = new ProductDto
+                        {
+                            Id = Guid.NewGuid(),
+                            InStock = product.InStock,
+                            CategoryId = product.CategoryId,
+                            CategoryName = product.CategoryName,
+                            Description = product.Description,
+                            Ean = product.Ean,
+                            ExpectedRestock = product.ExpectedRestock,
+                            ExternalId = product.Id,
+                            Name = product.Name,
+                            Price = product.Price,
+                            Source = product.Source
+                        };
+                        await _context.Products.AddAsync(item);
+                    }
+                    else
+                    {
+                        // Product exists, lets update it
+                        var existingProduct = await _context.Products.Where(s => s.Ean == product.Ean && s.Source == product.Source).FirstOrDefaultAsync();
+                        existingProduct.InStock = product.InStock;
+                        existingProduct.CategoryId = product.CategoryId;
+                        existingProduct.CategoryName = product.CategoryName;
+                        existingProduct.Description = product.Description;
+                        existingProduct.Ean = product.Ean;
+                        existingProduct.ExpectedRestock = product.ExpectedRestock;
+                        existingProduct.ExternalId = product.Id;
+                        existingProduct.Name = product.Name;
+                        existingProduct.Price = product.Price;
+                        existingProduct.Source = product.Source;
 
-                     _context.Update(existingProduct);
+                        _context.Update(existingProduct);
+                    }
                 }
+                await _context.SaveChangesAsync();
+                _logger.LogInformation("Successfully saved products to database");
+                return true;
             }
-            await _context.SaveChangesAsync();
-            return true;
+            catch(Exception e)
+            {
+                _logger.LogError("Failed to save products to database: " + products + e + e.StackTrace);
+            }
+            return false;
+
         }
 
         public async Task<List<ProductDto>> GetProductsByEan(string ean)
         {
+            _logger.LogInformation("Getting products from database with ean: " + ean);
             if (ean == null)
             {
+                _logger.LogDebug("No ean given");
                 return null;
             }
             try
             {
                 var products = await _context.Products.Where(p => p.Ean == ean).ToListAsync();
+                _logger.LogInformation("Successfully retrieved products from database");
                 return products;
             }
             catch(Exception e)
             {
-                // todo: exception handling
+                _logger.LogError("Failed to get products from database with ean: " + ean + e + e.StackTrace);
             }
             return null;
         }
