@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Net;
@@ -14,16 +15,18 @@ namespace TeamA.PurchaseOrders.Services.Services
     public class UndercuttersService : IUndercuttersService, IOrdersService
     {
         private HttpClient _client;
-
         private IHttpClientFactory _clientFactory;
-        public UndercuttersService(HttpClient client, IHttpClientFactory clientFactory)
+        private readonly ILogger<UndercuttersService> _logger;
+        public UndercuttersService(HttpClient client, IHttpClientFactory clientFactory, ILogger<UndercuttersService> logger)
         {
             _client = client;
             _clientFactory = clientFactory;
+            _logger = logger;
         }
 
         public async Task<List<ExternalProductDto>> GetProducts()
         {
+            _logger.LogInformation("Getting all products - Undercutters service");
             try
             {
                 using (var client = _clientFactory.CreateClient("background"))
@@ -32,6 +35,7 @@ namespace TeamA.PurchaseOrders.Services.Services
                     {
                         if (response.IsSuccessStatusCode)
                         {
+                            _logger.LogInformation("Successfully got all products");
                             var products = await response.Content.ReadAsAsync<List<ExternalProductDto>>();
                             foreach (var product in products)
                             {
@@ -45,19 +49,22 @@ namespace TeamA.PurchaseOrders.Services.Services
             }
             catch (Exception e)
             {
-
+                _logger.LogError("Exception when getting products" + e + e.StackTrace);
             }
+            _logger.LogDebug("Failed to get products");
             return null;
         }
 
         public async Task<ExternalProductDto> GetProduct(int id)
         {
+            _logger.LogInformation("Getting product with id: " + id);
             try
             {
                 using (HttpResponseMessage response = await _client.GetAsync($"http://undercutters.azurewebsites.net/api/product?id={id}"))
                 {
                     if (response.IsSuccessStatusCode)
                     {
+                        _logger.LogInformation("Successfully recieved products");
                         var product = await response.Content.ReadAsAsync<ExternalProductDto>();
                         return product;
 
@@ -66,13 +73,14 @@ namespace TeamA.PurchaseOrders.Services.Services
             }
             catch (Exception e)
             {
-
+                _logger.LogError("Exception when getting product with id: " + id + e + e.StackTrace);
             }
             return null;
         }
 
         public async Task<OrderCreatedDto> CreateOrder(string accountName, string cardNumber, int productId, int quantity)
         {
+            _logger.LogInformation("Creating order for product with id: " + productId);
             var order = new CreateOrderDto()
             {
                 AccountName = accountName,
@@ -87,6 +95,7 @@ namespace TeamA.PurchaseOrders.Services.Services
                 {
                     if(response.IsSuccessStatusCode)
                     {
+                        _logger.LogInformation("Successfully created order for product with Id: " + productId);
                         var product = await response.Content.ReadAsAsync<OrderCreatedDto>();
                         return product;
                     }
@@ -95,18 +104,20 @@ namespace TeamA.PurchaseOrders.Services.Services
                         var responseString = await response.Content.ReadAsStringAsync();
                         if (responseString.Contains("insufficient stock"))
                         {
+                            _logger.LogInformation("Failed to create order due to insufficient stock with product ID" + productId);
                             return new OrderCreatedDto
                             {
                                 Success = false
                             };
                         }
                     }
+                    _logger.LogDebug("Failed to create order for product with id " + productId);
                     return null;
                 }
             }
             catch (Exception e)
             {
-                //todo: exception handling
+                _logger.LogError("Exception when getting product with id: " + productId + e + e.StackTrace);
             }
             return null;
         }
