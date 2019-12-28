@@ -13,6 +13,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TeamA.PurchaseOrders.Models
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TeamA.PurchaseOrders.Repository", "TeamA.PurchaseOrders.Repository\TeamA.PurchaseOrders.Repository.csproj", "{C0C687BC-E0FC-4190-A2A7-710734B37FEE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TeamA.PurchaseOrdersAPI.Tests", "TeamA.PurchaseOrders.API.Tests\TeamA.PurchaseOrdersAPI.Tests.csproj", "{FDBFCFE2-3FEC-4C98-A4DA-49BA8909777B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{C0C687BC-E0FC-4190-A2A7-710734B37FEE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C0C687BC-E0FC-4190-A2A7-710734B37FEE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C0C687BC-E0FC-4190-A2A7-710734B37FEE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FDBFCFE2-3FEC-4C98-A4DA-49BA8909777B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FDBFCFE2-3FEC-4C98-A4DA-49BA8909777B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FDBFCFE2-3FEC-4C98-A4DA-49BA8909777B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FDBFCFE2-3FEC-4C98-A4DA-49BA8909777B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

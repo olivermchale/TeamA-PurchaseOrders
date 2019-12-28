@@ -89,7 +89,7 @@ namespace TeamA.PurchaseOrdersAPI
                 p.OrResult(r => !r.IsSuccessStatusCode)
                     .WaitAndRetryAsync(3, retry => TimeSpan.FromSeconds(Math.Pow(2, retry))))
                         .AddTransientHttpErrorPolicy(p => p.CircuitBreakerAsync(3, TimeSpan.FromSeconds(30)))
-                            .AddPolicyHandler(dodgyDealersTimeoutPolicy); // This timeout is for the entire call, ensuring it just errors instead of leaving user waiting for > 30s
+                            .AddPolicyHandler(dodgyDealersTimeoutPolicy);
 
             // Add a http client for the background services - this can be much more lenient than others as its doing its work as an inexpensive background task. 
             services.AddHttpClient();

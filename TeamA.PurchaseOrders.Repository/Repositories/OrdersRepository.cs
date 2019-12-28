@@ -67,7 +67,7 @@ namespace TeamA.PurchaseOrders.Repository.Repositories
 
         }
 
-        public async Task<OrderDetailVm> GetOrder(Guid id)
+        public async Task<OrderDetailVm> GetOrder(Guid? id)
         {
             _logger.LogInformation("Getting all orders in database with id: " + id);
             try

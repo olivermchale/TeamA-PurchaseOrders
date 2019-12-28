@@ -6,7 +6,7 @@ using TeamA.PurchaseOrders.Services.Services;
 
 namespace TeamA.PurchaseOrders.Services.Factories
 {
-    public class OrdersFactory
+    public class OrdersFactory : IOrdersFactory
     {
         private IUndercuttersService _undercuttersService;
         private IDodgyDealersService _dodgyDealersService;

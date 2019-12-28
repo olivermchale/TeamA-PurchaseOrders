@@ -25,7 +25,7 @@ namespace TeamA.PurchaseOrdersAPI.Controllers
         }
 
         [HttpGet("getProducts")]
-        public async Task<IActionResult> GetProducts()
+        public async Task<IActionResult> GetAndSaveProducts()
         {
             _logger.LogInformation("Getting all products");
             var products = await _productsService.GetAndSaveProducts();
@@ -53,6 +53,10 @@ namespace TeamA.PurchaseOrdersAPI.Controllers
         [HttpGet("getProductsByEan")]
         public async Task<IActionResult> GetProducts(string ean)
         {
+            if(ean == null)
+            {
+                return BadRequest("No ean");
+            }
             _logger.LogInformation("Finding all products with ean " + ean);
             var products = await _productsService.GetProductsByEan(ean);
             if(products == null)

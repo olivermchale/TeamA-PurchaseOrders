@@ -19,10 +19,10 @@ namespace TeamA.PurchaseOrdersAPI.Controllers
     public class OrdersController : ControllerBase
     {
         private IOrdersRepository _ordersRepository;
-        private OrdersFactory _ordersFactory;
+        private IOrdersFactory _ordersFactory;
         private readonly ILogger<OrdersController> _logger;
 
-        public OrdersController(IOrdersRepository ordersRepository, OrdersFactory ordersFactory, ILogger<OrdersController> logger)
+        public OrdersController(IOrdersRepository ordersRepository, IOrdersFactory ordersFactory, ILogger<OrdersController> logger)
         {
             _ordersRepository = ordersRepository;
             _ordersFactory = ordersFactory;
@@ -41,7 +41,7 @@ namespace TeamA.PurchaseOrdersAPI.Controllers
                 {
                     _logger.LogInformation("Failed to create an order due to insufficient stock");
                     await _ordersRepository.UpdateOrderAsync(orderId, null, "Insucfficient Stock");
-                    return BadRequest("Insucfficient Stock");
+                    return BadRequest("Insufficient Stock");
                 }
                 if(order != null)
                 {
@@ -71,8 +71,12 @@ namespace TeamA.PurchaseOrdersAPI.Controllers
         }
 
         [HttpGet("getOrder")]
-        public async Task<IActionResult> GetOrder(Guid id)
+        public async Task<IActionResult> GetOrder(Guid? id)
         {
+            if(id == null)
+            {
+                return BadRequest("No Id");
+            }
             _logger.LogInformation("Getting order: " + id);
             var order = await _ordersRepository.GetOrder(id);
             if (order != null)
