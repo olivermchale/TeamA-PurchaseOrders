@@ -13,7 +13,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TeamA.PurchaseOrders.Models
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TeamA.PurchaseOrders.Repository", "TeamA.PurchaseOrders.Repository\TeamA.PurchaseOrders.Repository.csproj", "{C0C687BC-E0FC-4190-A2A7-710734B37FEE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TeamA.PurchaseOrdersAPI.Tests", "TeamA.PurchaseOrders.API.Tests\TeamA.PurchaseOrdersAPI.Tests.csproj", "{FDBFCFE2-3FEC-4C98-A4DA-49BA8909777B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TeamA.PurchaseOrdersAPI.Tests", "TeamA.PurchaseOrders.API.Tests\TeamA.PurchaseOrdersAPI.Tests.csproj", "{FDBFCFE2-3FEC-4C98-A4DA-49BA8909777B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TeamA.PurchaseOrders.Services.Tests", "TeamA.PurchaseOrders.Services.Tests\TeamA.PurchaseOrders.Services.Tests.csproj", "{A53CBF61-E3F2-4B3B-8A30-1CD9C79E0CB8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,6 +47,10 @@ Global
 		{FDBFCFE2-3FEC-4C98-A4DA-49BA8909777B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FDBFCFE2-3FEC-4C98-A4DA-49BA8909777B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FDBFCFE2-3FEC-4C98-A4DA-49BA8909777B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A53CBF61-E3F2-4B3B-8A30-1CD9C79E0CB8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A53CBF61-E3F2-4B3B-8A30-1CD9C79E0CB8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A53CBF61-E3F2-4B3B-8A30-1CD9C79E0CB8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A53CBF61-E3F2-4B3B-8A30-1CD9C79E0CB8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
