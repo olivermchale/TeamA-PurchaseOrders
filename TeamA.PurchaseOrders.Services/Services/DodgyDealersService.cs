@@ -68,6 +68,7 @@ namespace TeamA.PurchaseOrders.Services.Services
             {
                 using (var client = _clientFactory.CreateClient("background"))
                 {
+                    // todo: env variable?
                     using (HttpResponseMessage response = await client.GetAsync($"http://dodgydealers.azurewebsites.net/api/product?id={id}"))
                     {
                         if (response.IsSuccessStatusCode)
