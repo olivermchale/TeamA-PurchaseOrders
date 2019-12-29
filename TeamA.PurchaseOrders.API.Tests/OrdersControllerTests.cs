@@ -137,7 +137,7 @@ namespace TeamA.PurchaseOrders.API.Tests
         {
             // Arrange
             _mockOrdersRepository.Setup(s => s.CreateOrder(It.IsAny<PurchaseOrderDto>()))
-                .ReturnsAsync(() => null);
+                .ReturnsAsync(() => Guid.Empty);
 
             // Act
             var result = await _ordersController.CreateOrder(_stubPurchaseOrderDto) as StatusCodeResult;

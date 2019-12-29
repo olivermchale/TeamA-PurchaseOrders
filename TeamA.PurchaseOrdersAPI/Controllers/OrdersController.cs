@@ -33,7 +33,7 @@ namespace TeamA.PurchaseOrdersAPI.Controllers
         {
             _logger.LogInformation("Creating a new order!");
             var orderId = await _ordersRepository.CreateOrder(orderInfo);
-            if(orderId != null)
+            if(orderId != null && orderId != Guid.Empty)
             {
                 var service = _ordersFactory.Create(orderInfo.Source);
                 var order = await service.CreateOrder(orderInfo.PaymentInformation.CardName, orderInfo.PaymentInformation.CardNumber, orderInfo.ExternalID, orderInfo.Quantity);

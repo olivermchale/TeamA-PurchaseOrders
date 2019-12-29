@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using Polly;
+using Polly.Retry;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -14,7 +15,7 @@ namespace TeamA.PurchaseOrders.Services.Services
     {
         private StoreClient _storeClient;
         private readonly ILogger<BazzasBazaarService> _logger;
-        private Policy _retryPolicy;
+        private AsyncRetryPolicy _retryPolicy;
 
         public BazzasBazaarService(StoreClient storeClient, ILogger<BazzasBazaarService> logger)
         {
@@ -22,7 +23,7 @@ namespace TeamA.PurchaseOrders.Services.Services
             _logger = logger;
             _retryPolicy = Policy
                .Handle<Exception>()
-               .WaitAndRetry(
+               .WaitAndRetryAsync(
                  5,
                  retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)),
                  (exception, timeSpan, context) => {
@@ -34,7 +35,7 @@ namespace TeamA.PurchaseOrders.Services.Services
         public async Task<OrderCreatedDto> CreateOrder(string accountName, string cardNumber, int productId, int quantity)
         {
             _logger.LogInformation("Create order - BazzasBazaarService");
-           return await _retryPolicy.Execute(async () =>
+           return await _retryPolicy.ExecuteAsync(async () =>
            {
                try
                {
@@ -75,13 +76,12 @@ namespace TeamA.PurchaseOrders.Services.Services
                    Success = false
                };
            });
-
         }
 
         public async Task<ExternalProductDto> GetProduct(int id)
         {
             _logger.LogInformation("Getting product with id: " + id);
-            return await _retryPolicy.Execute(async () =>
+            return await _retryPolicy.ExecuteAsync(async () =>
             {
                 try
                 {
@@ -115,7 +115,7 @@ namespace TeamA.PurchaseOrders.Services.Services
         public async Task<List<ExternalProductDto>> GetAllProducts()
         {
             _logger.LogInformation("Getting all products");
-            return await _retryPolicy.Execute(async () =>
+            return await _retryPolicy.ExecuteAsync(async () =>
             {
                 try
                 {

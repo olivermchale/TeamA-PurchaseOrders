@@ -61,7 +61,7 @@ namespace TeamA.PurchaseOrdersAPI
             services.AddScoped<IProductsRepository, ProductsRepository>();
 
             services.AddScoped<StoreClient>();
-            services.AddScoped<OrdersFactory>();
+            services.AddScoped<IOrdersFactory, OrdersFactory>();
 
             services.AddHostedService<ProductIngestionService>();
 
