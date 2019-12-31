@@ -89,7 +89,7 @@ namespace TeamA.PurchaseOrders.Repository.Repositories
 
         public async Task<OrderDetailVm> GetOrder(Guid? id)
         {
-            _logger.LogInformation("Getting all orders in database with id: " + id);
+            _logger.LogInformation("Getting order in database with id: " + id);
             return await _retryPolicy.ExecuteAsync(async () =>
             {
                 try
@@ -155,8 +155,6 @@ namespace TeamA.PurchaseOrders.Repository.Repositories
                 }
                 return false;
             });
-            
-
         }
     }
 }

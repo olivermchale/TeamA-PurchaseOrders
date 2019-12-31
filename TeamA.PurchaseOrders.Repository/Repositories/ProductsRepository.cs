@@ -129,7 +129,7 @@ namespace TeamA.PurchaseOrders.Repository.Repositories
             _logger.LogInformation("Getting products from database with ean: " + ean);
             return await _retryPolicy.ExecuteAsync(async () =>
             {
-                if (ean == null)
+                if (ean == null || ean == string.Empty)
                 {
                     _logger.LogDebug("No ean given");
                     return null;

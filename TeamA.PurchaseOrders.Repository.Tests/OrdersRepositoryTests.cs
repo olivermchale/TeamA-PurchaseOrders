@@ -7,6 +7,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using TeamA.PurchaseOrders.Data;
 using TeamA.PurchaseOrders.Models.Dtos;
+using TeamA.PurchaseOrders.Models.ViewModels;
 using TeamA.PurchaseOrders.Repository.Interfaces;
 using TeamA.PurchaseOrders.Repository.Repositories;
 
@@ -15,12 +16,11 @@ namespace TeamA.PurchaseOrders.Repository.Tests
     public class OrdersRepositoryTests
     {
         private IOrdersRepository _ordersRepository;
-        private IOrdersRepository _ordersRepositoryMockedContext;
-        private Mock<PurchaseOrdersDb> _mockContext;
         private Mock<ILogger<OrdersRepository>> _mockLogger;
         private PurchaseStatusDto _stubPurchaseStatusDto;
         private PaymentInformationDto _stubPaymentInformationDto;
         private PurchaseOrderDto _stubPurchaseOrderDto;
+        private OrderCreatedDto _stubOrderCreatedDto;
         
         [SetUp]
         public void Setup()
@@ -42,7 +42,7 @@ namespace TeamA.PurchaseOrders.Repository.Tests
             {
                 Address = "Test Drive",
                 ExternalID = 1,
-                ID = Guid.NewGuid(),
+                ID = Guid.Parse("d61a78a9-b6ad-4430-91ea-0c8d5227b6aa"),
                 IsDeleted = false,
                 PaymentInformation = _stubPaymentInformationDto,
                 PaymentInformationID = _stubPaymentInformationDto.ID,
@@ -57,10 +57,21 @@ namespace TeamA.PurchaseOrders.Repository.Tests
                 Source = "Undercutters",
                 StatusID = _stubPurchaseStatusDto.Id
             };
+            _stubOrderCreatedDto = new OrderCreatedDto
+            {
+                AccountName = "Testy1",
+                CardNumber = "10490249204920492049",
+                Id = 1,
+                ProductEan = "1 2 4 2 3",
+                ProductId = 1,
+                ProductName = "Product1",
+                PurchasedOn = new DateTime(),
+                Quantity = 5,
+                Success = true,
+                TotalPrice = 10
+            };
             _mockLogger = new Mock<ILogger<OrdersRepository>>();
             _ordersRepository = new OrdersRepository(GetInMemoryContextWithSeedData(), _mockLogger.Object);
-            _mockContext = GetMockedContext();
-            _ordersRepositoryMockedContext = new OrdersRepository(_mockContext.Object, _mockLogger.Object);
         }
 
         private PurchaseOrdersDb GetInMemoryContextWithSeedData()
@@ -75,12 +86,6 @@ namespace TeamA.PurchaseOrders.Repository.Tests
 
             context.SaveChanges();
 
-            return context;
-        }
-
-        private Mock<PurchaseOrdersDb> GetMockedContext()
-        {
-            var context = new Mock<PurchaseOrdersDb>();
             return context;
         }
 
@@ -99,13 +104,60 @@ namespace TeamA.PurchaseOrders.Repository.Tests
         }
 
         [Test]
-        public async Task GetOrders_NoOrders_Null()
+        public async Task CreateOrder_Success()
         {
-            // Arrange
-           
             // Act
-            
+            var order = await _ordersRepository.CreateOrder(_stubPurchaseOrderDto);
+
             // Assert
+            Assert.IsNotNull(order);
+            Assert.IsInstanceOf<Guid>(order);
+        }
+
+        [Test]
+        public async Task GetOrder_Valid_Success()
+        {
+            var order = await _ordersRepository.GetOrder(Guid.Parse("d61a78a9-b6ad-4430-91ea-0c8d5227b6aa"));
+
+            Assert.IsNotNull(order);
+            Assert.IsInstanceOf<OrderDetailVm>(order);
+            Assert.AreEqual(order.Address, _stubPurchaseOrderDto.Address);
+            Assert.AreEqual(order.CardholderName, _stubPurchaseOrderDto.PaymentInformation.CardName);
+            Assert.AreEqual(order.Id, _stubPurchaseOrderDto.ID);
+            Assert.AreEqual(order.OrderPrice, _stubPurchaseOrderDto.ProductPrice);
+            Assert.AreEqual(order.Postcode, _stubPurchaseOrderDto.Postcode);
+            Assert.AreEqual(order.ProductId, _stubPurchaseOrderDto.ProductID);
+            Assert.AreEqual(order.ProductName, _stubPurchaseOrderDto.ProductName);
+            Assert.AreEqual(order.ProductPrice, _stubPurchaseOrderDto.ProductPrice);
+            Assert.AreEqual(order.PurchasedOn, _stubPurchaseOrderDto.PurchasedOn);
+            Assert.AreEqual(order.Quantity, _stubPurchaseOrderDto.Quantity);
+            Assert.AreEqual(order.Source, _stubPurchaseOrderDto.Source);
+        }
+
+        [Test]
+        public async Task GetOrder_DoesntExist_Null()
+        {
+            var order = await _ordersRepository.GetOrder(Guid.NewGuid());
+
+            Assert.IsNull(order);
+        }
+
+        [Test]
+        public async Task UpdateOrder_Exists_Valid_True()
+        {
+            var success = await _ordersRepository.UpdateOrderAsync(Guid.Parse("d61a78a9-b6ad-4430-91ea-0c8d5227b6aa"), _stubOrderCreatedDto, "Complete");
+
+            Assert.IsNotNull(success);
+            Assert.IsTrue(success);
+        }
+
+        [Test]
+        public async Task UpdateOrder_NoOrderExists_Fails_False()
+        {
+            var success = await _ordersRepository.UpdateOrderAsync(Guid.NewGuid(), _stubOrderCreatedDto, "Complete");
+
+            Assert.IsNotNull(success);
+            Assert.IsFalse(success);
         }
     }
 }
