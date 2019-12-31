@@ -9,11 +9,11 @@ namespace TeamA.PurchaseOrders.Repository.Interfaces
 {
     public interface IOrdersRepository
     {
-        Task<Guid?> CreateOrder(PurchaseOrderDto purchaseOrder);
+        Task<Guid> CreateOrder(PurchaseOrderDto purchaseOrder);
 
         Task<OrderListVm> GetOrders();
 
-        Task<OrderDetailVm> GetOrder(Guid id);
+        Task<OrderDetailVm> GetOrder(Guid? id);
         Task <bool> UpdateOrderAsync(Guid? orderId, OrderCreatedDto createdOrder, string status);
     }
 }

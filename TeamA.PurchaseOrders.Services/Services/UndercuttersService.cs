@@ -52,7 +52,8 @@ namespace TeamA.PurchaseOrders.Services.Services
                 _logger.LogError("Exception when getting products" + e + e.StackTrace);
             }
             _logger.LogDebug("Failed to get products");
-            return null;
+            return new List<ExternalProductDto>();
+
         }
 
         public async Task<ExternalProductDto> GetProduct(int id)
@@ -112,7 +113,10 @@ namespace TeamA.PurchaseOrders.Services.Services
                         }
                     }
                     _logger.LogDebug("Failed to create order for product with id " + productId);
-                    return null;
+                    return new OrderCreatedDto
+                    {
+                        Success = false
+                    };
                 }
             }
             catch (Exception e)

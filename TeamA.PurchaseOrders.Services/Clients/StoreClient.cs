@@ -457,22 +457,22 @@ public partial class StoreClient : System.ServiceModel.ClientBase<IStore>, IStor
     {
     }
     
-    public System.Threading.Tasks.Task<BazzasBazaar.Service.Category[]> GetAllCategoriesAsync()
+    public virtual  System.Threading.Tasks.Task<BazzasBazaar.Service.Category[]> GetAllCategoriesAsync()
     {
         return base.Channel.GetAllCategoriesAsync();
     }
     
-    public System.Threading.Tasks.Task<BazzasBazaar.Service.Category> GetCategoryByIdAsync(int id)
+    public virtual  System.Threading.Tasks.Task<BazzasBazaar.Service.Category> GetCategoryByIdAsync(int id)
     {
         return base.Channel.GetCategoryByIdAsync(id);
     }
     
-    public System.Threading.Tasks.Task<BazzasBazaar.Service.Product[]> GetFilteredProductsAsync(System.Nullable<int> categoryId, string categoryName, System.Nullable<double> minPrice, System.Nullable<double> maxPrice)
+    public virtual System.Threading.Tasks.Task<BazzasBazaar.Service.Product[]> GetFilteredProductsAsync(System.Nullable<int> categoryId, string categoryName, System.Nullable<double> minPrice, System.Nullable<double> maxPrice)
     {
         return base.Channel.GetFilteredProductsAsync(categoryId, categoryName, minPrice, maxPrice);
     }
     
-    public System.Threading.Tasks.Task<BazzasBazaar.Service.Product> GetProductByIdAsync(int id)
+    public virtual System.Threading.Tasks.Task<BazzasBazaar.Service.Product> GetProductByIdAsync(int id)
     {
         return base.Channel.GetProductByIdAsync(id);
     }
@@ -482,7 +482,7 @@ public partial class StoreClient : System.ServiceModel.ClientBase<IStore>, IStor
         return base.Channel.GetOrderByIdAsync(id);
     }
     
-    public System.Threading.Tasks.Task<BazzasBazaar.Service.Order> CreateOrderAsync(string accountName, string cardNumber, int productId, int quantity)
+    public virtual System.Threading.Tasks.Task<BazzasBazaar.Service.Order> CreateOrderAsync(string accountName, string cardNumber, int productId, int quantity)
     {
         return base.Channel.CreateOrderAsync(accountName, cardNumber, productId, quantity);
     }
