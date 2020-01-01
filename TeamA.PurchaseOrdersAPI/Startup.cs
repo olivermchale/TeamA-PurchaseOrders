@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -49,6 +50,8 @@ namespace TeamA.PurchaseOrdersAPI
                     });
             });
 
+            JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
+
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
             services.AddDbContext<PurchaseOrdersDb>(options => options.UseSqlServer(
                 Configuration.GetConnectionString("PurchaseOrders")));
@@ -64,6 +67,25 @@ namespace TeamA.PurchaseOrdersAPI
             services.AddScoped<IOrdersFactory, OrdersFactory>();
 
             services.AddHostedService<ProductIngestionService>();
+
+            services.AddAuthentication("Bearer")
+            .AddJwtBearer("Bearer", options =>
+            {
+            options.Audience = "staff_api"; ;
+            options.Authority = "https://threeamigosauth.azurewebsites.net/";
+            });
+
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("Customer", builder =>
+                {
+                    builder.RequireClaim("role", "Customer", "Admin", "Staff");
+                });
+                options.AddPolicy("Staff", builder =>
+                {
+                    builder.RequireClaim("role", "Staff", "Admin");
+                });
+            });
 
             var undercuttersAddress = Configuration.GetValue<Uri>("UndercuttersUri");
 
@@ -117,6 +139,7 @@ namespace TeamA.PurchaseOrdersAPI
                 app.UseHsts();
             }
 
+            app.UseAuthentication();
             app.UseHttpsRedirection();
             app.UseMvc();
         }
