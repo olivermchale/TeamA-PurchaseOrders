@@ -23,8 +23,6 @@ namespace TeamA.PurchaseOrdersAPI
             {
                 var services = scope.ServiceProvider;
                 var env = services.GetRequiredService<IHostingEnvironment>();
-                if (env.IsDevelopment())
-                {
                     var context = services.GetRequiredService<PurchaseOrdersDb>();
                     context.Database.Migrate();
                     try
@@ -36,7 +34,6 @@ namespace TeamA.PurchaseOrdersAPI
                         var logger = services.GetRequiredService<ILogger<Program>>();
                         logger.LogDebug("Seeding test data failed.");
                     }
-                }
             }
 
             host.Run();
