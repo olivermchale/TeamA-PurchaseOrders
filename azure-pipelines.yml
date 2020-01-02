@@ -10,6 +10,7 @@ resources:
 
 variables:
   tag: '$(Build.BuildId)'
+  buildConfiguration: 'Release'
 
 stages:
 - stage: Build
@@ -20,10 +21,19 @@ stages:
     pool:
       vmImage: 'ubuntu-latest'
     steps:
-    - task: Docker@2
-      displayName: Build an image
+      - task: DotNetCoreCLI@2
+      displayName: 'Testing $(buildConfiguration)'
       inputs:
-        command: build
+        command: test
+        platform: '**/**Tests/*csproj'
+        arguments: '--configuration $(buildConfiguration)'
+    - task: Docker@2
+      displayName: Build an image and push to the container registry
+      inputs:
+        command: buildAndPush,
+        repository: teamapurchaseorders
         dockerfile: '**/Dockerfile'
+        containerRegistry: teamapurchaseorders
         tags: |
-          $(tag)
+          $(Build.BuildId)
+          latest
