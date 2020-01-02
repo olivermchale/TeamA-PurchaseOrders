@@ -21,7 +21,7 @@ stages:
     pool:
       vmImage: 'ubuntu-latest'
     steps:
-      - task: DotNetCoreCLI@2
+    - task: DotNetCoreCLI@2
       displayName: 'Testing $(buildConfiguration)'
       inputs:
         command: test
