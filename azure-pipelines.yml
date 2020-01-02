@@ -30,7 +30,7 @@ stages:
     - task: Docker@2
       displayName: Build an image and push to the container registry
       inputs:
-        command: buildAndPush,
+        command: buildAndPush
         repository: teamapurchaseorders
         dockerfile: '**/Dockerfile'
         containerRegistry: teamapurchaseorders
