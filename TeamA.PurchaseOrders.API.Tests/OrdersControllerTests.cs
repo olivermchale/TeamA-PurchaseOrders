@@ -11,6 +11,7 @@ using TeamA.PurchaseOrders.Repository.Interfaces;
 using TeamA.PurchaseOrders.Repository.Repositories;
 using TeamA.PurchaseOrders.Services.Factories;
 using TeamA.PurchaseOrders.Services.Interfaces;
+using TeamA.PurchaseOrders.Services.Interfaces.External;
 using TeamA.PurchaseOrdersAPI.Controllers;
 
 namespace TeamA.PurchaseOrders.API.Tests
@@ -29,6 +30,7 @@ namespace TeamA.PurchaseOrders.API.Tests
         private List<OrderListItemVm> _stubOrderListList;
         private OrderListVm _stubOrderList;
         private OrderDetailVm _stubOrderDetailVm;
+        Mock<IStockService> _mockStockService;
 
         [SetUp]
         public void Setup()
@@ -37,7 +39,8 @@ namespace TeamA.PurchaseOrders.API.Tests
             _mockOrdersFactory = new Mock<IOrdersFactory>();
             _mockLogger = new Mock<ILogger<OrdersController>>();
             _mockOrdersService = new Mock<IOrdersService>();
-            _ordersController = new OrdersController(_mockOrdersRepository.Object, _mockOrdersFactory.Object, _mockLogger.Object);
+            _mockStockService = new Mock<IStockService>();
+            _ordersController = new OrdersController(_mockOrdersRepository.Object, _mockOrdersFactory.Object, _mockLogger.Object, _mockStockService.Object);
             _stubPurchaseOrderDto = new PurchaseOrderDto
             {
                 Address = "MockAddress",
