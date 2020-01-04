@@ -21,16 +21,21 @@ using TeamA.PurchaseOrders.Repository.Repositories;
 using TeamA.PurchaseOrders.Services.BackgroundServices;
 using TeamA.PurchaseOrders.Services.Factories;
 using TeamA.PurchaseOrders.Services.Interfaces;
+using TeamA.PurchaseOrders.Services.Interfaces.External;
 using TeamA.PurchaseOrders.Services.Services;
+using TeamA.PurchaseOrders.Services.Services.External;
 
 namespace TeamA.PurchaseOrdersAPI
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        public Startup(IConfiguration configuration, Microsoft.AspNetCore.Hosting.IHostingEnvironment environment)
         {
             Configuration = configuration;
+            Environment = environment;
         }
+
+        private Microsoft.AspNetCore.Hosting.IHostingEnvironment Environment;
 
         public IConfiguration Configuration { get; }
 
@@ -75,6 +80,23 @@ namespace TeamA.PurchaseOrdersAPI
             options.Authority = "https://threeamigosauth.azurewebsites.net/";
             });
 
+            if(Environment.IsDevelopment())
+            {
+                services.AddScoped<IStockService, StockServiceFake>();
+            } else
+            {
+                var stockServiceAddress = Configuration.GetValue<Uri>("StockServiceUri");
+                services.AddHttpClient<IStockService, StockService>(c =>
+                {
+                    c.BaseAddress = stockServiceAddress;
+                    c.DefaultRequestHeaders.Accept.Clear();
+                    c.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+                }).AddTransientHttpErrorPolicy(p =>
+                    p.OrResult(r => !r.IsSuccessStatusCode)
+                        .WaitAndRetryAsync(3, retry => TimeSpan.FromSeconds(Math.Pow(2, retry))))
+                .AddTransientHttpErrorPolicy(p => p.CircuitBreakerAsync(5, TimeSpan.FromSeconds(30)));
+                services.AddScoped<IStockService, StockService>();
+            }
             services.AddAuthorization(options =>
             {
                 options.AddPolicy("Customer", builder =>
@@ -122,6 +144,7 @@ namespace TeamA.PurchaseOrdersAPI
             }).AddTransientHttpErrorPolicy(p =>
                 p.OrResult(r => !r.IsSuccessStatusCode)
                     .WaitAndRetryAsync(8, retry => TimeSpan.FromSeconds(Math.Pow(2, retry))));
+
 
         }
 
