@@ -78,7 +78,7 @@ namespace TeamA.PurchaseOrdersAPI.Controllers
             if(products == null)
             {
                 _logger.LogWarning("Unable to find any available products");
-                return NotFound();
+                return NotFound("No products");
             }
             _logger.LogInformation("Successfully got available products");
             return Ok(products);
