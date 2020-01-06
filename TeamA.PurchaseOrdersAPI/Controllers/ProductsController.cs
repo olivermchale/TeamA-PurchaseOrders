@@ -69,5 +69,19 @@ namespace TeamA.PurchaseOrdersAPI.Controllers
             _logger.LogInformation("Successfully found all products"); 
             return Ok(products);
         }
+
+        [HttpGet("getAvailableProducts")]
+        public async Task<IActionResult> GetAvailableProducts()
+        {
+            _logger.LogInformation("Getting all available products");
+            var products = await _productsService.GetAvailableProducts();
+            if(products == null)
+            {
+                _logger.LogWarning("Unable to find any available products");
+                return NotFound();
+            }
+            _logger.LogInformation("Successfully got available products");
+            return Ok(products);
+        }
     }
 }
