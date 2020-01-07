@@ -8,6 +8,6 @@ namespace TeamA.PurchaseOrders.Services.Interfaces.External
 {
     public interface IStockService
     {
-        Task<bool> UpdateStockLevel(SetStockLevelDto setStockLevelDto);
+        Task<bool> UpdateStockLevel(SetStockLevelDto setStockLevelDto, string token);
     }
 }

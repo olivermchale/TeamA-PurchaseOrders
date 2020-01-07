@@ -36,6 +36,7 @@ namespace TeamA.PurchaseOrdersAPI.Controllers
         [HttpPost("createOrder")]
         public async Task<IActionResult> CreateOrder(PurchaseOrderDto orderInfo)
         {
+            var token = HttpContext.Request.Headers["Authorization"];
             _logger.LogInformation("Creating a new order!");
             var orderId = await _ordersRepository.CreateOrder(orderInfo);
             if(orderId != null && orderId != Guid.Empty)
@@ -56,7 +57,7 @@ namespace TeamA.PurchaseOrdersAPI.Controllers
                     {
                         ProductID = orderInfo.ProductID,
                         StockLevel = orderInfo.Quantity
-                    });
+                    }, token);
                     return Ok(success);
                 };
                 await _ordersRepository.UpdateOrderAsync(orderId, null, "Failed");
