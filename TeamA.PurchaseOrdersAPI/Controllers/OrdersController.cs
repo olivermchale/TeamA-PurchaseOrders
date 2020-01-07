@@ -11,6 +11,7 @@ using TeamA.PurchaseOrders.Models.Dtos;
 using TeamA.PurchaseOrders.Repository.Interfaces;
 using TeamA.PurchaseOrders.Services.Factories;
 using TeamA.PurchaseOrders.Services.Interfaces;
+using TeamA.PurchaseOrders.Services.Interfaces.External;
 
 namespace TeamA.PurchaseOrdersAPI.Controllers
 {
@@ -23,12 +24,14 @@ namespace TeamA.PurchaseOrdersAPI.Controllers
         private IOrdersRepository _ordersRepository;
         private IOrdersFactory _ordersFactory;
         private readonly ILogger<OrdersController> _logger;
+        private IStockService _stockService;
 
-        public OrdersController(IOrdersRepository ordersRepository, IOrdersFactory ordersFactory, ILogger<OrdersController> logger)
+        public OrdersController(IOrdersRepository ordersRepository, IOrdersFactory ordersFactory, ILogger<OrdersController> logger, IStockService stockService)
         {
             _ordersRepository = ordersRepository;
             _ordersFactory = ordersFactory;
             _logger = logger;
+            _stockService = stockService;
         }
         [HttpPost("createOrder")]
         public async Task<IActionResult> CreateOrder(PurchaseOrderDto orderInfo)
@@ -49,6 +52,11 @@ namespace TeamA.PurchaseOrdersAPI.Controllers
                 {
                     _logger.LogInformation("Successfully created a new order - " + orderId);
                     var success = await _ordersRepository.UpdateOrderAsync(orderId, order, "Complete");
+                    await _stockService.UpdateStockLevel(new SetStockLevelDto
+                    {
+                        ProductID = orderInfo.ProductID,
+                        StockLevel = orderInfo.Quantity
+                    });
                     return Ok(success);
                 };
                 await _ordersRepository.UpdateOrderAsync(orderId, null, "Failed");
