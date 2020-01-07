@@ -39,6 +39,17 @@ namespace TeamA.PurchaseOrders.Services.Services
             return await _productsRepository.GetProducts();
         }
 
+        public async Task<IEnumerable<ProductDto>> GetAvailableProducts()
+        {
+            var allProducts = await _productsRepository.GetProducts();
+            var distinctProducts = allProducts
+                                    .GroupBy(v => v.Ean)
+                                    .Select(grp => grp.Last());
+
+            return await Task.FromResult(distinctProducts);
+
+        }
+
         public async Task<List<ProductItemVm>> GetProduct(int id)
         {
             var undercuttersProduct = await _undercuttersService.GetProduct(id);
