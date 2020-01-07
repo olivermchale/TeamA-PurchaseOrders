@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moq;
@@ -120,6 +121,9 @@ namespace TeamA.PurchaseOrders.API.Tests
                 .ReturnsAsync(_stubOrderCreatedDto);
             _mockOrdersRepository.Setup(m => m.UpdateOrderAsync(It.IsAny<Guid>(), It.IsAny<OrderCreatedDto>(), It.IsAny<string>()))
                 .ReturnsAsync(true);
+            _ordersController.ControllerContext = new ControllerContext();
+            _ordersController.ControllerContext.HttpContext = new DefaultHttpContext();
+            _ordersController.ControllerContext.HttpContext.Request.Headers["Authorization"] = "token";
 
             // Act
             var result = await _ordersController.CreateOrder(_stubPurchaseOrderDto) as OkObjectResult;
@@ -141,6 +145,9 @@ namespace TeamA.PurchaseOrders.API.Tests
             // Arrange
             _mockOrdersRepository.Setup(s => s.CreateOrder(It.IsAny<PurchaseOrderDto>()))
                 .ReturnsAsync(() => Guid.Empty);
+            _ordersController.ControllerContext = new ControllerContext();
+            _ordersController.ControllerContext.HttpContext = new DefaultHttpContext();
+            _ordersController.ControllerContext.HttpContext.Request.Headers["Authorization"] = "token";
 
             // Act
             var result = await _ordersController.CreateOrder(_stubPurchaseOrderDto) as StatusCodeResult;
@@ -162,6 +169,9 @@ namespace TeamA.PurchaseOrders.API.Tests
                 .ReturnsAsync(_stubOrderFailedToCreateDto);
             _mockOrdersRepository.Setup(m => m.UpdateOrderAsync(It.IsAny<Guid>(), It.IsAny<OrderCreatedDto>(), It.IsAny<string>()))
                 .ReturnsAsync(true);
+            _ordersController.ControllerContext = new ControllerContext();
+            _ordersController.ControllerContext.HttpContext = new DefaultHttpContext();
+            _ordersController.ControllerContext.HttpContext.Request.Headers["Authorization"] = "token";
 
             // Act
             var result = await _ordersController.CreateOrder(_stubPurchaseOrderDto) as BadRequestObjectResult;

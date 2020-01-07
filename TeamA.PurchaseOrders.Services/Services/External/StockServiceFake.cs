@@ -9,7 +9,7 @@ namespace TeamA.PurchaseOrders.Services.Services.External
 {
     public class StockServiceFake : IStockService
     {
-        public async Task<bool> UpdateStockLevel(SetStockLevelDto setStockLevelDto)
+        public async Task<bool> UpdateStockLevel(SetStockLevelDto setStockLevelDto, string token)
         {
             return await Task.FromResult(true);
         }

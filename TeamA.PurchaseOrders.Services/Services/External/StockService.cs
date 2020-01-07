@@ -19,10 +19,11 @@ namespace TeamA.PurchaseOrders.Services.Services.External
             _client = httpClient;
             _logger = logger;
         }
-        public async Task<bool> UpdateStockLevel(SetStockLevelDto setStockLevelDto)
+        public async Task<bool> UpdateStockLevel(SetStockLevelDto setStockLevelDto, string token)
         {
             try
             {
+                _client.DefaultRequestHeaders.Add("Authorization", token);
                 _logger.LogInformation("Updating stock level for product: " + setStockLevelDto.ProductID);
                 var json = new StringContent(JsonConvert.SerializeObject(setStockLevelDto), Encoding.UTF8, "application/json");
                 using (HttpResponseMessage response = await _client.PostAsync("api/Stock/SetStockLevelOfStock", json))
