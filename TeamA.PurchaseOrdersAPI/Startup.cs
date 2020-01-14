@@ -86,17 +86,18 @@ namespace TeamA.PurchaseOrdersAPI
                 services.AddScoped<IStockService, StockServiceFake>();
             } else
             {
-                var stockServiceAddress = Configuration.GetValue<Uri>("StockServiceUri");
-                services.AddHttpClient<IStockService, StockService>(c =>
-                {
-                    c.BaseAddress = stockServiceAddress;
-                    c.DefaultRequestHeaders.Accept.Clear();
-                    c.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
-                }).AddTransientHttpErrorPolicy(p =>
-                    p.OrResult(r => !r.IsSuccessStatusCode)
-                        .WaitAndRetryAsync(3, retry => TimeSpan.FromSeconds(Math.Pow(2, retry))))
-                .AddTransientHttpErrorPolicy(p => p.CircuitBreakerAsync(5, TimeSpan.FromSeconds(30)));
-                services.AddScoped<IStockService, StockService>();
+                //var stockServiceAddress = Configuration.GetValue<Uri>("StockServiceUri");
+                //services.AddHttpClient<IStockService, StockService>(c =>
+                //{
+                //    c.BaseAddress = stockServiceAddress;
+                //    c.DefaultRequestHeaders.Accept.Clear();
+                //    c.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+                //}).AddTransientHttpErrorPolicy(p =>
+                //    p.OrResult(r => !r.IsSuccessStatusCode)
+                //        .WaitAndRetryAsync(3, retry => TimeSpan.FromSeconds(Math.Pow(2, retry))))
+                //.AddTransientHttpErrorPolicy(p => p.CircuitBreakerAsync(5, TimeSpan.FromSeconds(30)));
+                //services.AddScoped<IStockService, StockService>();
+                services.AddScoped<IStockService, StockServiceFake>();
             }
             services.AddAuthorization(options =>
             {
